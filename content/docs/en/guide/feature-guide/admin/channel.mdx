@@ -1,0 +1,64 @@
+---
+title: Channel Management
+description: Channels are the core configuration unit for connecting AI providers
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Channels are the core configuration unit for connecting AI providers — each channel corresponds to one provider's API key. Log in with an admin account, then click "Channels" in the left sidebar or visit `/console/channel` directly.
+
+The channel list shows all configured AI provider channels with their name, type, status (green = active / red = disabled), response time, and used quota.
+
+## Add a Channel
+
+1. Click the "Add Channel" button in the top-right of the channel list page — a configuration dialog appears
+2. Select the provider type (e.g. OpenAI, Claude, Gemini)
+3. Enter the channel name and API key
+
+4. Check the models this channel supports in the model list, or click "Fill Default Models" to auto-populate
+5. Expand the advanced config section as needed and fill in optional fields:
+
+| Option | Description |
+| --- | --- |
+| Base URL | Custom endpoint URL for proxies or self-hosted deployments |
+| Priority | Higher value = higher selection priority, default 0 |
+| Weight | Random weight among same-priority channels, default 0 |
+| Model Mapping | Map user-requested model names to actual model names (JSON) |
+| Parameter Override | Force-override certain request parameters (JSON) |
+| Auto Disable | When enabled, automatically disables the channel after consecutive failures |
+
+6. Click "Submit" — the new channel appears in the list
+
+## Test a Channel
+
+1. Find the target channel in the list and click the "Test" button in the action column on the right
+2. Wait for the test request to complete — a dialog shows the response time and success/failure status
+
+Lower response time means faster performance. You can also click "Test All Channels" at the top of the list for one-click batch testing.
+
+## Batch Operations
+
+1. Check the checkboxes on the left side of multiple channel rows
+2. A batch operation toolbar appears at the top of the page
+
+3. Click the corresponding button to perform the batch operation:
+   - **Batch Enable**: Set selected channels to active
+   - **Batch Disable**: Set selected channels to disabled
+   - **Batch Tag**: Assign a tag to selected channels for categorized management
+
+## Multi-Key Mode
+
+Multi-Key mode lets a single channel use multiple API keys with automatic polling. A failed key is skipped automatically and re-enabled when it recovers.
+
+1. Click the "Edit" button on the right side of the target channel row
+2. Find the "Multi-Key Management" section in the edit dialog
+
+3. Click "Add Key" to enter multiple API keys one by one
+4. Select a polling mode:
+
+| Polling Mode | Description |
+| --- | --- |
+| Round Robin | Use each key in sequence |
+| Weighted Random | Select keys randomly by weight |
+
+5. Click "Save" to complete the configuration

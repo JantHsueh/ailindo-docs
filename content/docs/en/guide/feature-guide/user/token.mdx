@@ -1,0 +1,37 @@
+---
+title: Token Management
+description: Tokens are API credentials — each token can have its own permission scope and quota limit
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Tokens are API credentials. Each token can be independently configured with its own permission scope and quota limit. Click "Tokens" in the left sidebar, or visit `/console/token` directly.
+
+![Token list page](/assets/guide/feature-guide/token-list.png)
+
+The token list shows all created tokens with their name, status, used quota, remaining quota, and expiration time.
+
+## Create a Token
+
+1. Click the "Create Token" button in the top-right of the token list page — a creation dialog appears
+2. Enter a token name (name it by purpose, e.g. "Production" or "Testing")
+3. Configure the following options as needed:
+
+![Create token dialog](/assets/guide/feature-guide/token-create.png)
+
+| Option | Description |
+| --- | --- |
+| Expiration | Set an expiry date; leave blank or set to -1 for no expiration |
+| Remaining Quota | Limits the maximum quota this token can consume; auto-disabled when exceeded |
+| Unlimited Quota | When enabled, no quota limit applies (still subject to account total quota) |
+| Model Restrictions | Restrict this token to specific models; leave blank for no restriction |
+| IP Allowlist | Restrict allowed source IPs; leave blank for no restriction |
+| Group | Specify the channel group this token uses |
+
+4. Click "Submit" — the dialog shows the complete token key. **Copy and save it immediately**, as it cannot be viewed again after closing the dialog.
+
+![Token created successfully, showing full key](/assets/guide/feature-guide/token-created-key.png)
+
+<Callout type="warn">
+  The token key is only fully displayed once at creation. Copy and save it immediately. Token keys have full API call permissions — do not share them with others or commit them to code repositories.
+</Callout>

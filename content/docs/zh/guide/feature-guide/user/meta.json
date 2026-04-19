@@ -1,0 +1,16 @@
+{
+  "title": "用户指南",
+  "defaultOpen": false,
+  "pages": [
+    "auth",
+    "personal-setting",
+    "token",
+    "api",
+    "chat-apps",
+    "pricing",
+    "log",
+    "topup",
+    "subscription",
+    "task"
+  ]
+}

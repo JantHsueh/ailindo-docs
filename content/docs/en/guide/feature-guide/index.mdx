@@ -1,0 +1,239 @@
+---
+title: Feature Guide Overview
+description: New API feature guide, divided into User Guide and Admin Guide by role
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { User, Shield, Crown, Key, BarChart2, CreditCard, Bot, Settings } from 'lucide-react';
+
+New API is a unified LLM gateway platform that aggregates multiple AI provider APIs into a standard OpenAI-compatible interface, letting you access dozens of models through a single endpoint. This guide is divided into User Guide and Admin Guide by role.
+
+![Homepage](/assets/guide/home.png)
+
+## Role Overview
+
+The platform has three roles with different permission levels.
+
+### Regular User
+
+Default role after registration. Can create tokens, call APIs, view usage, top up and subscribe.
+
+### Admin
+
+Elevated by Root. Has all user permissions plus the ability to manage channels, users, redemption codes, logs, models, and groups.
+
+### Root (Super Admin)
+
+Highest privilege level. Has all admin permissions plus system settings, custom OAuth, and performance monitoring.
+
+## User Guide
+
+For all logged-in users, covering the complete flow from registration to daily use.
+
+### Registration & Login
+
+Supports password login and third-party OAuth via GitHub, Discord, and more.
+
+- Password login
+- Third-party OAuth login
+- Password reset
+- New user registration
+
+[View detailed documentation →](/en/docs/guide/feature-guide/user/auth)
+
+### Personal Settings
+
+Manage account info, enable 2FA, and bind Passkey for passwordless login.
+
+- Change username and password
+- Bind email address
+- Enable two-factor authentication (2FA)
+- Register Passkey for passwordless login
+- Bind third-party accounts
+
+[View detailed documentation →](/en/docs/guide/feature-guide/user/personal-setting)
+
+### Token Management
+
+Create and manage API credentials with quota limits, model restrictions, and IP allowlists.
+
+- Create new tokens
+- Configure token permissions
+- Set quota limits
+- Configure model restrictions
+- Set IP allowlists
+
+[View detailed documentation →](/en/docs/guide/feature-guide/user/token)
+
+### Using the API
+
+Compatible with OpenAI, Claude, Gemini formats. Built-in Playground for online testing.
+
+- Playground online testing
+- Get API address
+- Code examples (Python, cURL)
+- Supported API endpoints
+
+[View detailed documentation →](/en/docs/guide/feature-guide/user/api)
+
+### Usage Logs
+
+View detailed records of each API call including model, token consumption, and quota deduction.
+
+- View call logs
+- Search and filter records
+- Data statistics charts
+- Quota consumption analysis
+
+[View detailed documentation →](/en/docs/guide/feature-guide/user/log)
+
+### Quota & Top Up
+
+Top up via redemption codes, EPay, Stripe, and more. Includes referral rewards.
+
+- Online payment top-up
+- Redemption code top-up
+- Referral rewards program
+- View top-up history
+
+[View detailed documentation →](/en/docs/guide/feature-guide/user/topup)
+
+### Subscription Plans
+
+Periodic subscription packages for users with stable usage needs.
+
+- View subscription plans
+- Purchase subscriptions
+- Manage auto-renewal
+
+[View detailed documentation →](/en/docs/guide/feature-guide/user/subscription)
+
+### Pricing
+
+View pricing for all models and billing information.
+
+- View model prices
+- Search specific models
+- Understand billing rules
+
+[View detailed documentation →](/en/docs/guide/feature-guide/user/pricing)
+
+## Admin Guide
+
+For Admin and Root roles, covering all platform operations and system configuration.
+
+### Channel Management
+
+Configure AI provider channels with multi-key polling, priority, and auto-disable strategies.
+
+- Add new channels
+- Configure channel parameters
+- Channel testing
+- Batch operations
+- Multi-key mode configuration
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/channel)
+
+### User Management
+
+View and manage all users — modify roles, groups, quotas, and account status.
+
+- View user list
+- Edit user information
+- Modify user roles
+- Adjust user quotas
+- Search users
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/user)
+
+### Redemption Code Management
+
+Batch generate and manage quota redemption codes.
+
+- Batch generate codes
+- Set code values
+- Export codes
+- View usage status
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/redemption)
+
+### Log Management
+
+View platform-wide API call logs and user operation records.
+
+- View all logs
+- Advanced filtering
+- Data statistics analysis
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/log)
+
+### Subscription Management
+
+Create and manage subscription packages.
+
+- Create subscription plans
+- Edit plan information
+- Manage subscribed users
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/subscription)
+
+### Model Management
+
+Configure model pricing and availability.
+
+- Set model multipliers
+- Enable or disable models
+- Batch modify pricing
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/model)
+
+### Group Management
+
+Create user groups for differentiated billing and channel allocation.
+
+- Create user groups
+- Configure group multipliers
+- Assign channels
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/group)
+
+### System Settings (Root Only)
+
+Root-only global config center covering site info, billing rules, payments, and OAuth.
+
+- Site basic information
+- Billing rules configuration
+- Payment method configuration
+- Email service configuration
+- Registration and login settings
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/system-setting)
+
+### Custom OAuth (Root Only)
+
+Configure custom OAuth login providers.
+
+- Add OAuth providers
+- Configure OAuth parameters
+- Test OAuth login
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/custom-oauth)
+
+### Performance Monitoring (Root Only)
+
+View system performance metrics and operational status.
+
+- View system load
+- Monitor channel performance
+- Analyze response times
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/performance)
+
+### Documentation Config (Root Only)
+
+Configure documentation site display content.
+
+- Customize documentation content
+- Configure documentation links
+
+[View detailed documentation →](/en/docs/guide/feature-guide/admin/docs-config)

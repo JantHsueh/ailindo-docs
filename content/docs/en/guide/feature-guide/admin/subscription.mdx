@@ -1,0 +1,31 @@
+---
+title: Subscription Plan Management
+description: Create and manage subscription plans
+---
+
+Create and manage subscription plans, control which plans are visible to users, and manually activate subscriptions for users. Log in with an admin account and visit `/console/subscription` directly (the admin view differs from the user purchase view).
+
+The plan list shows all created subscription plans with their name, price, duration, and status (published / unpublished).
+
+## Create a Plan
+
+1. Click the "Create Plan" button on the subscription management page — a creation dialog appears
+
+2. Fill in the following:
+   - **Plan Name**: The name users see when purchasing
+   - **Price**: The plan's selling price
+   - **Duration Type**: Select daily / weekly / monthly / custom days
+   - **Included Quota**: The quota amount included in the plan
+3. Click "Submit" — the plan is created and defaults to unpublished status
+
+## Publish / Unpublish a Plan
+
+1. Find the target plan in the list and click the "Publish" or "Unpublish" button on the right
+
+2. Published plans are visible and purchasable by users; unpublished plans are hidden from users but existing subscriptions are not affected
+
+## Manually Activate a Subscription for a User
+
+1. Click the "Manual Bind" button on the subscription management page
+2. Enter the target user's username or email, then select the plan to activate
+3. Click "Confirm" — the system creates a subscription record for that user, effective immediately

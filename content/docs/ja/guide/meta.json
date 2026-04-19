@@ -14,10 +14,8 @@
     "wiki/changelog",
     "wiki/special-thanks",
     "---機能ガイド---",
-    "home",
-    "console",
-    "pricing",
-    "document",
-    "about"
+    "feature-guide/index",
+    "feature-guide/user",
+    "feature-guide/admin"
   ]
 }

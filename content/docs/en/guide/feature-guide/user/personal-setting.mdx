@@ -1,0 +1,65 @@
+---
+title: Personal Settings
+description: Manage account information, security settings, and third-party account bindings
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Manage account information, security settings, and third-party account bindings. After logging in, click your avatar in the top-right corner and select "Personal Settings", or visit `/console/personal` directly.
+
+## Basic Information
+
+![Personal info page](/assets/guide/feature-guide/personal.png)
+
+In the basic information section you can:
+
+- **Change username**: Enter a new username and click "Save"
+- **Bind email**: Enter your email address, click "Send Code", enter the verification code, then click "Bind"
+- **Change password**: Enter your current password, new password, and confirm the new password, then click "Change Password"
+
+## Two-Factor Authentication (2FA)
+
+Enabling 2FA requires an additional dynamic code from an authenticator app at each login, effectively preventing unauthorized access.
+
+![2FA settings section](/assets/guide/feature-guide/2fa-section.png)
+
+Setup steps:
+
+1. Install an authenticator app on your phone (Google Authenticator or Microsoft Authenticator recommended)
+2. Find the "Two-Factor Authentication" section in Personal Settings and click "Enable 2FA"
+3. Scan the QR code shown on the page with your authenticator app — a 6-digit code will appear in the app
+
+![2FA QR code dialog](/assets/guide/feature-guide/2fa-qrcode.png)
+
+4. Enter the 6-digit code from the app into the verification field and click "Confirm Enable"
+5. The system displays a set of backup codes — save them immediately by taking a screenshot or writing them down
+
+<Callout type="warn">
+  Backup codes are only shown once and cannot be viewed again after closing the dialog. If you lose your backup codes and cannot use the authenticator, you will need to contact an admin to reset 2FA.
+</Callout>
+
+## Passkey Passwordless Login
+
+Passkey supports login via device fingerprint, face recognition, or hardware security keys — no password required.
+
+![Passkey settings section](/assets/guide/feature-guide/passkey-section.png)
+
+Registration steps:
+
+1. Scroll down in Personal Settings to find the "Passkey" section
+2. Click "Register Passkey"
+3. The browser shows a system verification prompt — complete fingerprint, face, or security key verification as prompted
+4. Once verified, Passkey registration is complete and can be used for future logins
+
+## Third-Party Account Binding
+
+Binding a GitHub, Discord, or other third-party account allows you to log in directly with that account without entering a password.
+
+![Third-party account binding section](/assets/guide/feature-guide/oauth-bind-section.png)
+
+Binding steps:
+
+1. Scroll down in Personal Settings to find the "Third-Party Account Binding" section
+2. Click "Bind" next to the platform you want to connect
+3. The page redirects to that platform's authorization page — log in and click "Authorize"
+4. After authorization, you are redirected back and the binding status changes to "Bound"

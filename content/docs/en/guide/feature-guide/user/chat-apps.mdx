@@ -1,0 +1,128 @@
+---
+title: Chat Application Integration
+description: Quickly import New API configuration into various AI chat applications
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+New API supports quick configuration import to various AI chat applications for easy testing and daily use.
+
+## One-Click Configuration Import
+
+You can import configuration to supported chat applications with one click from the Console → Token page.
+
+![One-click import configuration](/assets/guide/import-chat-config.png)
+
+### How to Use
+
+1. Find the token you want to use in the token list
+2. Click the "Import" or "Configure" button on the right side of the token
+3. Select the target chat application
+4. The system automatically redirects to the application and fills in the configuration
+
+## ChatGPT Next Web
+
+<Callout type="warn">
+  ChatGPT Next Web deployment is currently suspended
+</Callout>
+
+## Lobe Chat
+
+<Callout type="info">
+  Lobe Chat is an open-source multimodal conversation application that supports multiple large language models (LLMs) and plugin extensions. It enables not only text conversations but also multimodal interactions with images and audio, suitable for personal assistants, knowledge Q&A, content creation, and more. Lobe Chat features a clean and intuitive interface with multi-device sync, allowing users to customize models and plugins to flexibly extend conversation capabilities. Whether you're a developer or regular user, you can easily get started and enjoy the efficient experience of intelligent conversations.
+</Callout>
+
+<Callout type="warn">
+  Lobe Chat currently does not support one-click import from New API and requires manual configuration
+</Callout>
+
+### Configuration Steps
+
+1. Open the Lobe Chat application
+2. Go to settings and find the "Language Model" configuration area
+3. Fill in the configuration according to the following information:
+
+![Lobe Chat configuration - Step 1](/assets/guide/lobechat-1.png)
+
+- **API Address**: Fill in the Base URL of the New API platform
+- **API Key**: Fill in the token created in New API
+
+![Lobe Chat configuration - Step 2](/assets/guide/lobechat-2.png)
+
+4. Click "Save" to complete the configuration
+5. You can now see all available models provided by New API in the model selection
+
+## AI as Workspace
+
+<Callout type="info">
+  AI as Workspace is an innovative way to integrate artificial intelligence capabilities into your workspace. By deeply combining AI assistants with daily office work, collaboration, knowledge management, and other scenarios, users can process information more efficiently, automate repetitive tasks, and receive intelligent suggestions to improve overall work efficiency and experience.
+</Callout>
+
+<Callout type="info">
+  Supports one-click import from New API
+</Callout>
+
+### How to Use
+
+1. Click "Import to AI as Workspace" on the New API token page
+2. The system automatically redirects to AI as Workspace and fills in the configuration
+3. Confirm the configuration and start using
+
+## AMA Q&A
+
+<Callout type="info">
+  AMA Q&A is an intelligent Q&A assistant provided by New API, supporting multi-turn conversations and complex question answering. Users can communicate with AMA Q&A in natural language to obtain knowledge, technical support, or business consultation, improving communication efficiency and experience.
+</Callout>
+
+<Callout type="warn">
+  Requires installing the AMA Q&A app first
+</Callout>
+
+### How to Use
+
+1. Download and install the AMA Q&A app from the app store
+2. Click "Import to AMA Q&A" on the New API token page
+3. The app automatically opens and completes the configuration
+4. Start conversing with the AI assistant
+
+## OpenCat
+
+<Callout type="info">
+  OpenCat is an open-source multi-platform AI chat client that supports multiple large language model integrations. Users can have natural language conversations with AI through a clean interface, suitable for daily communication, knowledge Q&A, content creation, and more. OpenCat supports multi-device sync with flexible configuration, suitable for individuals and teams.
+</Callout>
+
+<Callout type="warn">
+  Requires installing the OpenCat app first
+</Callout>
+
+### How to Use
+
+1. Download and install the OpenCat app from the app store
+2. Click "Import to OpenCat" on the New API token page
+3. The app automatically opens and completes the configuration
+4. Select a model in OpenCat and start conversing
+
+## Manual Configuration for Other Applications
+
+For applications that don't support one-click import, you can configure manually:
+
+### Configuration Information
+
+Get the following information from New API:
+
+| Configuration Item | Description | Where to Get |
+| --- | --- | --- |
+| API Base URL | API endpoint address | Platform homepage or token page |
+| API Key | Token secret key | Displayed when creating token (only once) |
+| Available Models | List of supported models | Personal Settings → Available Models or Pricing page |
+
+### General Configuration Steps
+
+1. Find the "Settings" or "Configuration" entry in the target application
+2. Find the "Custom API" or "OpenAI Compatible Interface" configuration area
+3. Fill in the API Base URL and API Key
+4. Save the configuration and start using
+
+<Callout type="info">
+  Most applications that support OpenAI API can integrate with New API by filling in a custom API address
+</Callout>

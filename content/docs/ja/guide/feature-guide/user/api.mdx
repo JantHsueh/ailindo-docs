@@ -1,0 +1,56 @@
+---
+title: API の使い方
+description: OpenAI の base_url をプラットフォームアドレスに置き換え、トークンを api_key として使用
+---
+
+OpenAI の `base_url` をプラットフォームアドレスに置き換え、プラットフォーム発行のトークンを `api_key` として使用するだけで呼び出しを開始できます。
+
+## Playground オンラインテスト
+
+左側ナビゲーションの「Playground」をクリックするか、`/console/playground` に直接アクセスしてください。
+
+![Playground ページ](/assets/guide/feature-guide/playground.png)
+
+Playground はコード不要でモデルと直接対話できる内蔵オンラインテストツールです。トークンが正常に動作するか確認できます。
+
+## API アドレスの取得
+
+![ホームページ API アドレスコピーエリア](/assets/guide/feature-guide/api-address.png)
+
+ホームページから API Base URL をコピーし、クライアントまたはコードの `base_url` として使用してください。
+
+## コード例
+
+### Python（OpenAI SDK）
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-xxxxxxxxxxxxxxxx",  # プラットフォーム発行のトークン
+    base_url="https://your-platform.com/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+print(response.choices[0].message.content)
+```
+
+## 対応エンドポイント
+
+> **注**: 以下のエンドポイントは上流プラットフォーム（OpenAI、Claude、Gemini など）が提供する標準的な API エンドポイントの例です。本プラットフォームはこれらのリクエストを対応する上流サービスにプロキシします。
+
+| エンドポイント | パス | 説明 |
+| --- | --- | --- |
+| チャット補完 | `POST /v1/chat/completions` | 会話生成、ストリーミング対応 |
+| テキスト補完 | `POST /v1/completions` | 従来の補完エンドポイント |
+| 埋め込み | `POST /v1/embeddings` | テキストのベクトル化 |
+| 画像生成 | `POST /v1/images/generations` | テキストから画像 |
+| 音声認識 | `POST /v1/audio/transcriptions` | Whisper など |
+| 音声合成 | `POST /v1/audio/speech` | TTS |
+| リランク | `POST /v1/rerank` | ドキュメントの再ランク付け |
+| Responses API | `POST /v1/responses` | OpenAI Responses 形式 |
+| リアルタイム | `GET /v1/realtime`（WebSocket） | OpenAI Realtime API |
+| モデル一覧 | `GET /v1/models` | 利用可能なモデルの一覧 |

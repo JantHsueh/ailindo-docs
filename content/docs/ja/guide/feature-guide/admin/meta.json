@@ -1,0 +1,17 @@
+{
+  "title": "管理者ガイド",
+  "defaultOpen": false,
+  "pages": [
+    "channel",
+    "user",
+    "redemption",
+    "log",
+    "subscription",
+    "model",
+    "group",
+    "system-setting",
+    "custom-oauth",
+    "performance",
+    "docs-config"
+  ]
+}
