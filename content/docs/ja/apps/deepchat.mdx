@@ -1,0 +1,59 @@
+---
+title: DeepChat - フル機能AI Agentクライアント
+description: DeepChat ガイド — オープンソースで商用利用に配慮したフル機能AI Agentクライアントを New API に接続し、DeepLink で DeepChat 設定をワンクリック導入します。
+---
+
+<Callout type="info" title="チャット設定オプション">
+  New API コンソールのシステム設定 -> チャット設定で、以下のショートカットオプションを追加できます。これにより、トークン管理ページから
+  DeepChat へワンクリックで入力できます：
+</Callout>
+
+    ```json
+    { "DeepChat": "deepchat://provider/install?v=1&data={deepchatConfig}" }
+    ```
+
+<Callout type="info">
+  DeepChat は、オープンソースでクロスプラットフォーム対応、商用利用に配慮したフル機能AI
+  Agentクライアントです。クラウドモデルとローカルモデル、MCP ツール呼び出し、Skills、ACP、Agent
+  統合、リモートコントロールなどのワークフローをサポートし、複数 Provider と高度な AI Agent
+  を一元管理したいユーザーに適しています。
+</Callout>
+
+- 公式サイト：[https://deepchat.thinkinai.xyz](https://deepchat.thinkinai.xyz)
+- GitHub リポジトリ：[https://github.com/ThinkInAIXYZ/deepchat](https://github.com/ThinkInAIXYZ/deepchat)
+- ダウンロードURL：[https://deepchat.thinkinai.xyz/#/download](https://deepchat.thinkinai.xyz/#/download)
+
+## NewAPI 接続方法
+
+### 方法一：ワンクリック導入
+
+1. New API コンソールのサイドバーで「トークン管理」を開き、使用するトークンを見つけます
+   <img src="/assets/deepchat/1-Enter-API-key.png" alt="トークン管理を開く" width="240" />
+
+2. トークン操作で **DeepChat** を選択します
+   <img src="/assets/deepchat/2-API-key-deepchat.png" alt="DeepChat を選択" width="360" />
+
+3. ブラウザから DeepChat を起動し、アプリを開くことを確認します
+   ![DeepChat を開く](/assets/deepchat/3-open-deepchat.png)
+
+4. DeepChat の Provider 導入プレビューで設定を確認します
+   ![DeepChat 設定を確認](/assets/deepchat/4-deepchat-ok.png)
+
+5. モデル一覧を開き、New API モデルを選択して利用を開始します
+   ![モデル一覧を開く](/assets/deepchat/5-open-models.png)
+
+### 方法二：手動導入
+
+1. New API コンソールで API Key とサイトアドレスをコピーします
+   ![New API 手動設定ガイド](/assets/deepchat/7-new-api-manual-guidance.png)
+
+2. DeepChat 設定で New API Provider を追加または編集し、API アドレスと API Key を入力します
+   ![DeepChat 手動設定ガイド](/assets/deepchat/6-deepchat-manual-guidance.png)
+
+3. モデル一覧を開き、New API モデルを選択して利用を開始します
+   ![モデル一覧を開く](/assets/deepchat/5-open-models.png)
+
+## 関連リンク
+
+- [DeepChat GitHub リポジトリ](https://github.com/ThinkInAIXYZ/deepchat)
+- [DeepChat ダウンロードページ](https://deepchat.thinkinai.xyz/#/download)
