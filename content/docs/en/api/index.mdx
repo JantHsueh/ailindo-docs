@@ -1,6 +1,6 @@
 ---
 title: API Reference
-description: New API Complete API Documentation
+description: AI 灵动 Complete API Documentation
 ---
 
 import { Card, Cards } from 'fumadocs-ui/components/card';
@@ -16,31 +16,14 @@ import {
   Image,
   Video,
   FileQuestion,
-  Server,
-  SlidersHorizontal,
-  UserCheck,
-  Users,
-  KeyRound,
-  Link2,
-  Network,
-  Blocks,
-  Key,
-  Ticket,
-  CreditCard,
-  ScrollText,
-  ChartBar,
-  ListTodo,
-  FolderKanban,
-  Store,
-  ShieldAlert,
 } from 'lucide-react';
 
 ## Overview
 
-New API provides a complete set of RESTful API interfaces, categorized into **AI Model APIs** and **Management APIs**. You can use these interfaces to invoke AI capabilities and perform system management functions.
+This documentation provides a complete set of RESTful **AI Model APIs**, compatible with the OpenAI API format. You can use these interfaces to invoke various AI capabilities.
 
 <Callout title="Online Debugging">
-  You can visit the [Apifox Playground](https://apifox.newapi.ai/) to test and debug API interfaces online, or browse the API documentation below.
+  You can visit the [Apifox Playground](https://ailindo.com) to test and debug API interfaces online, or browse the API documentation below.
 </Callout>
 
 ## AI Model APIs
@@ -113,114 +96,5 @@ AI Model APIs provide access to various AI capabilities and are compatible with 
     title="Unimplemented"
     description="Placeholder interface, not yet implemented."
     href="/en/docs/api/ai-model/unimplemented/files/listfiles"
-  />
-</Cards>
-
-## Management APIs
-
-Management APIs are used for backend operations such as system configuration, user management, and business management.
-
-<Cards>
-  <Card
-    icon={<Server />}
-    title="System"
-    description="System information and status interface."
-    href="/en/docs/api/management/system/status-get"
-  />
-  <Card
-    icon={<SlidersHorizontal />}
-    title="System Settings"
-    description="System configuration management interface."
-    href="/en/docs/api/management/system-settings/option-get"
-  />
-  <Card
-    icon={<UserCheck />}
-    title="User Authentication"
-    description="User login, registration, password management, and other interfaces."
-    href="/en/docs/api/management/user-auth/user-login-post"
-  />
-  <Card
-    icon={<Users />}
-    title="User Management"
-    description="User information management interface."
-    href="/en/docs/api/management/user-management/user-self-get"
-  />
-  <Card
-    icon={<KeyRound />}
-    title="Two-Factor Authentication"
-    description="2FA Two-Factor Authentication interface."
-    href="/en/docs/api/management/two-factor-auth/user-2fa-status-get"
-  />
-  <Card
-    icon={<Link2 />}
-    title="OAuth"
-    description="Third-party OAuth login interface."
-    href="/en/docs/api/management/oauth/oauth-github-get"
-  />
-  <Card
-    icon={<Network />}
-    title="Channel Management"
-    description="API channel configuration management interface."
-    href="/en/docs/api/management/channel-management/channel-get"
-  />
-  <Card
-    icon={<Blocks />}
-    title="Model Management"
-    description="Model configuration management interface."
-    href="/en/docs/api/management/model-management/models-get"
-  />
-  <Card
-    icon={<Key />}
-    title="Token Management"
-    description="API token management interface."
-    href="/en/docs/api/management/token-management/token-get"
-  />
-  <Card
-    icon={<Ticket />}
-    title="Redemption Codes"
-    description="Redemption code management interface."
-    href="/en/docs/api/management/redemption/redemption-get"
-  />
-  <Card
-    icon={<CreditCard />}
-    title="Payment"
-    description="Payment and top-up interfaces."
-    href="/en/docs/api/management/payment/user-topup-info-get"
-  />
-  <Card
-    icon={<ScrollText />}
-    title="Logs"
-    description="Usage log query interface."
-    href="/en/docs/api/management/logs/log-get"
-  />
-  <Card
-    icon={<ChartBar />}
-    title="Statistics"
-    description="Data statistics interface."
-    href="/en/docs/api/management/statistics/data-get"
-  />
-  <Card
-    icon={<ListTodo />}
-    title="Tasks"
-    description="Asynchronous task management interface."
-    href="/en/docs/api/management/tasks/task-get"
-  />
-  <Card
-    icon={<FolderKanban />}
-    title="Groups"
-    description="User group management interface."
-    href="/en/docs/api/management/groups/group-get"
-  />
-  <Card
-    icon={<Store />}
-    title="Vendors"
-    description="Vendor management interface."
-    href="/en/docs/api/management/vendors/vendors-get"
-  />
-  <Card
-    icon={<ShieldAlert />}
-    title="Security Verification"
-    description="Security verification related interfaces."
-    href="/en/docs/api/management/security-verification/verify-status-get"
   />
 </Cards>

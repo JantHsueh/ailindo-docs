@@ -9,14 +9,7 @@ import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { Feedback } from '@/components/feedback';
 import { LLMCopyButton, ViewOptions } from '@/components/page-actions';
-import { onRateAction } from '@/lib/github';
-
-// GitHub repository info for source links
-const owner = 'QuantumNous';
-const repo = 'new-api-docs-v1';
-const branch = 'main';
 
 export default async function Page(props: {
   params: Promise<{ lang: string; slug?: string[] }>;
@@ -50,7 +43,6 @@ export default async function Page(props: {
         />
         <ViewOptions
           markdownUrl={`/${lang}/llms.mdx/${page.slugs.join('/')}`}
-          githubUrl={`https://github.com/${owner}/${repo}/blob/${branch}/content/docs/${page.path}`}
           lang={lang}
         />
       </div>
@@ -61,7 +53,6 @@ export default async function Page(props: {
           })}
         />
       </DocsBody>
-      <Feedback lang={lang} onRateAction={onRateAction} />
     </DocsPage>
   );
 }

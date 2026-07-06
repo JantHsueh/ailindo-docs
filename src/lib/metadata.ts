@@ -4,16 +4,16 @@ export function createMetadata(override: Metadata): Metadata {
   return {
     ...override,
     icons: {
-      icon: '/favicon.ico',
-      shortcut: '/favicon.ico',
-      apple: '/assets/logo.png',
+      icon: '/assets/logo.webp',
+      shortcut: '/assets/logo.webp',
+      apple: '/assets/logo.webp',
     },
     openGraph: {
       title: override.title ?? undefined,
       description: override.description ?? undefined,
-      url: 'https://www.newapi.ai',
-      images: '/assets/logo.png',
-      siteName: 'New API',
+      url: 'https://ailindo.com',
+      images: '/assets/logo.webp',
+      siteName: 'AI 灵动',
       type: 'website',
       ...override.openGraph,
     },
@@ -21,7 +21,7 @@ export function createMetadata(override: Metadata): Metadata {
       card: 'summary_large_image',
       title: override.title ?? undefined,
       description: override.description ?? undefined,
-      images: '/assets/logo.png',
+      images: '/assets/logo.webp',
       ...override.twitter,
     },
   };

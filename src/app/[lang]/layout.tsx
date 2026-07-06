@@ -43,22 +43,19 @@ const titleMap: Record<
   { default: string; template: string; description: string }
 > = {
   en: {
-    default: 'New API - The Foundation of Your AI Universe',
-    template: '%s | New API',
-    description:
-      'Connect all AI providers, manage your AI assets, and build the future on a unified infrastructure platform. Deploy in minutes, scale effortlessly.',
+    default: 'AI 灵动',
+    template: '%s | AI 灵动',
+    description: "China's leading aggregated AI API relay platform.",
   },
   zh: {
-    default: 'New API - AI 基座',
-    template: '%s | New API',
-    description:
-      '承载所有 AI 应用，管理你的数字资产，连接未来的统一基础设施平台。快速部署，轻松扩展。',
+    default: 'AI 灵动',
+    template: '%s | AI 灵动',
+    description: '国内领先的聚合 AI 中转站',
   },
   ja: {
-    default: 'New API - あなたの AI ユニバースの基盤',
-    template: '%s | New API',
-    description:
-      'すべての AI プロバイダーを接続し、AI アセットを管理し、統一されたインフラストラクチャプラットフォームで未来を構築。数分でデプロイ、簡単にスケール。',
+    default: 'AI 灵动',
+    template: '%s | AI 灵动',
+    description: '国内をリードする統合型 AI 中継プラットフォーム。',
   },
 };
 
@@ -89,10 +86,8 @@ export async function generateMetadata({
       'Unified AI Interface',
       'Intelligent API Management',
     ],
-    authors: [
-      { name: 'New API Team', url: 'https://github.com/QuantumNous/new-api' },
-    ],
-    creator: 'New API Team',
+    authors: [{ name: 'AI 灵动' }],
+    creator: 'AI 灵动',
     alternates: {
       languages: {
         en: '/en',
@@ -105,7 +100,7 @@ export async function generateMetadata({
       locale: lang,
       title: titles.default,
       description: titles.description,
-      siteName: 'New API',
+      siteName: 'AI 灵动',
     },
     twitter: {
       card: 'summary_large_image',

@@ -1,9 +1,0 @@
-{
-  "title": "合规与使用政策",
-  "description": "合规声明与可接受使用政策",
-  "icon": "Scale",
-  "root": true,
-  "pages": [
-    "acceptable-use"
-  ]
-}
