@@ -2,6 +2,5 @@
   "title": "API 参考",
   "description": "AI 灵动 接口文档",
   "icon": "Code",
-  "root": true,
   "pages": ["index", "ai-model"]
 }

@@ -1,0 +1,6 @@
+{
+  "title": "Usage Tutorial",
+  "icon": "BookOpen",
+  "defaultOpen": true,
+  "pages": ["index"]
+}

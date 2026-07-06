@@ -1,0 +1,6 @@
+{
+  "title": "使用教程",
+  "icon": "BookOpen",
+  "defaultOpen": true,
+  "pages": ["index", "ailindo"]
+}
