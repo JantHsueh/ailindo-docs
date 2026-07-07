@@ -36,15 +36,22 @@ CONF_DIR="./certbot/conf"
 LIVE_DIR="$CONF_DIR/live/$DOMAIN"
 mkdir -p "$CONF_DIR" "./certbot/www"
 
-echo "### 1/4 生成临时自签证书：$DOMAIN"
-# 幂等：先清掉上一次 init 残留的 certbot 状态，让本脚本可重复执行。
-# 这些 live/archive/renewal 由 root 身份的 certbot 容器写入，宿主的非 root 部署用户删不掉
-# （archive/、live/$DOMAIN 均为 root:root 755）；且 live/$DOMAIN/{privkey,fullchain}.pem 是
-# 指向 archive/ 的符号链接——非 root 的 openssl 覆盖它们会 "Permission denied" 而失败，
-# 正是"第二次跑 init 卡在 1/4"的根因。故用一次性 root 容器（复用 certbot 服务、挂载相同卷）删除。
-$DC run --rm --entrypoint sh certbot -c \
-  "rm -rf /etc/letsencrypt/live/$DOMAIN /etc/letsencrypt/archive/$DOMAIN /etc/letsencrypt/renewal/$DOMAIN.conf"
+# certbot 容器以 root 运行，把 live/archive/renewal 写成 root 属主；宿主的非 root 部署用户无法
+# 用 rm 删除它们（父目录 archive/、live/$DOMAIN 均 root:root 755）。凡是清理这些证书目录，一律
+# 借一次性 root 容器（复用 certbot 服务、挂载相同卷）在容器内以 root 删除，保证脚本可重复执行。
+purge_cert_state() {
+  $DC run --rm --entrypoint sh certbot -c \
+    "rm -rf /etc/letsencrypt/live/$DOMAIN /etc/letsencrypt/archive/$DOMAIN /etc/letsencrypt/renewal/$DOMAIN.conf"
+}
 
+# 先移除常驻 certbot 容器：它每 12h 一次的续期循环可能在 init 期间重新写出 root 属主的
+# live/archive，与下面的清理竞态（表现为“已清理却又 Permission denied”）。init 完成后由
+# 部署脚本末尾的 docker compose up -d 重新拉起它。首次运行时容器不存在，忽略报错。
+$DC rm -sf certbot >/dev/null 2>&1 || true
+
+echo "### 1/4 生成临时自签证书：$DOMAIN"
+# 幂等：清掉上一次 init 残留的 root 属主证书目录，否则非 root 的 openssl 覆盖旧符号链接会 Permission denied。
+purge_cert_state
 mkdir -p "$LIVE_DIR"
 # 不吞 openssl 的 stderr：临时证书生成失败时要能看到真实原因（权限/磁盘等），否则只剩一句 exit 1。
 openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
@@ -52,7 +59,7 @@ openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
   -out    "$LIVE_DIR/fullchain.pem" \
   -subj "/CN=$DOMAIN"
 
-echo "### 2/4 启动 nginx（用临时证书；--no-deps 只起 nginx，不触发 app 构建）"
+echo "### 2/4 启动 nginx（用临时证书；--no-deps 只起 nginx）"
 $DC up -d --no-deps nginx
 
 # 等 nginx 真的进入稳态再继续——避免容器进 restart loop 时盲跑 certbot 浪费一次 Let's Encrypt 频次。
@@ -83,7 +90,9 @@ fi
 echo "    ✅ nginx 运行正常"
 
 echo "### 3/4 删除临时证书并申请正式证书（STAGING=$STAGING）"
-rm -rf "$CONF_DIR/live/$DOMAIN" "$CONF_DIR/archive/$DOMAIN" "$CONF_DIR/renewal/$DOMAIN.conf"
+# 删掉 certbot或openssl 生成的临时自签证书（连同任何 root 属主残留），让 certbot 干净签发。必须走 root 容器：
+# 宿主非 root 用户 rm 不掉 certbot 之前以 root 写下的 archive/$DOMAIN（就是本步之前报的 Permission denied）。
+purge_cert_state
 
 staging_arg=""
 [ "$STAGING" != "0" ] && staging_arg="--staging"
