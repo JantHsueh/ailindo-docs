@@ -50,7 +50,7 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}
-            SOURCE_REPO=${{ vars.SOURCE_REPO || 'ailindo' }}
+            SOURCE_REPO=${{ vars.SOURCE_REPO }}
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

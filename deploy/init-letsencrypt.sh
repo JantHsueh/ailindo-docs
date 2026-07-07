@@ -37,11 +37,20 @@ LIVE_DIR="$CONF_DIR/live/$DOMAIN"
 mkdir -p "$CONF_DIR" "./certbot/www"
 
 echo "### 1/4 生成临时自签证书：$DOMAIN"
+# 幂等：先清掉上一次 init 残留的 certbot 状态，让本脚本可重复执行。
+# 这些 live/archive/renewal 由 root 身份的 certbot 容器写入，宿主的非 root 部署用户删不掉
+# （archive/、live/$DOMAIN 均为 root:root 755）；且 live/$DOMAIN/{privkey,fullchain}.pem 是
+# 指向 archive/ 的符号链接——非 root 的 openssl 覆盖它们会 "Permission denied" 而失败，
+# 正是"第二次跑 init 卡在 1/4"的根因。故用一次性 root 容器（复用 certbot 服务、挂载相同卷）删除。
+$DC run --rm --entrypoint sh certbot -c \
+  "rm -rf /etc/letsencrypt/live/$DOMAIN /etc/letsencrypt/archive/$DOMAIN /etc/letsencrypt/renewal/$DOMAIN.conf"
+
 mkdir -p "$LIVE_DIR"
+# 不吞 openssl 的 stderr：临时证书生成失败时要能看到真实原因（权限/磁盘等），否则只剩一句 exit 1。
 openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
   -keyout "$LIVE_DIR/privkey.pem" \
   -out    "$LIVE_DIR/fullchain.pem" \
-  -subj "/CN=$DOMAIN" 2>/dev/null
+  -subj "/CN=$DOMAIN"
 
 echo "### 2/4 启动 nginx（用临时证书；--no-deps 只起 nginx，不触发 app 构建）"
 $DC up -d --no-deps nginx
