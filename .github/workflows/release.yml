@@ -109,20 +109,24 @@ jobs:
             gunzip -c images/image.tar.gz | docker load
             rm -f images/image.tar.gz
 
-            if [ "$INIT" = "true" ]; then
-              umask 077
-              cat > .env <<EOF
-            DOMAIN=${DOMAIN}
-            LETSENCRYPT_EMAIL=${LE_EMAIL}
-            STAGING=${CERT_STAGING}
-            IMAGE_TAG=${IMAGE_TAG}
-            EOF
-              cat > app.env <<EOF
+            # 运行时密钥（app.env）每次部署都从 GitHub Secrets 重写，让 secrets 成为唯一事实源。
+            # 关键：必须在 docker compose up -d 之前落盘——compose 会把 env_file 内容并入 app 服务的
+            # 配置哈希，内容一变即触发容器重建、读入最新值，无需再单独强制重建。
+            umask 077
+            cat > app.env <<EOF
             INKEEP_API_KEY=${APP_INKEEP_API_KEY}
             AI_MODEL=${APP_AI_MODEL}
             AI_BASE_URL=${APP_AI_BASE_URL}
             GITHUB_APP_ID=${APP_GITHUB_APP_ID}
             GITHUB_APP_PRIVATE_KEY="${APP_GITHUB_APP_PRIVATE_KEY}"
+            EOF
+
+            if [ "$INIT" = "true" ]; then
+              cat > .env <<EOF
+            DOMAIN=${DOMAIN}
+            LETSENCRYPT_EMAIL=${LE_EMAIL}
+            STAGING=${CERT_STAGING}
+            IMAGE_TAG=${IMAGE_TAG}
             EOF
               bash init-letsencrypt.sh          # 临时证书 → 起 nginx → 申请正式证书 → reload
               docker compose up -d               # app + nginx + certbot
@@ -131,11 +135,11 @@ jobs:
                 echo "❌ .env 缺失：服务器未初始化。请先用 workflow_dispatch 勾选 init 跑一次。" >&2
                 exit 1
               fi
-              # 只更新 IMAGE_TAG，保留服务器上既有的 .env / app.env
+              # 只更新 IMAGE_TAG，保留服务器上既有的 .env（app.env 已在上面每次重写）
               grep -q '^IMAGE_TAG=' .env \
                 && sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=${IMAGE_TAG}|" .env \
                 || echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
-              docker compose up -d               # IMAGE_TAG 变了 → 重建 app 容器
+              docker compose up -d               # IMAGE_TAG 或 app.env 变了 → compose 重建 app 容器
               docker compose exec -T nginx nginx -t && docker compose exec -T nginx nginx -s reload || true
             fi
 
