@@ -1,0 +1,43 @@
+# 服务端专用 compose：使用 CI 预构建、经 SSH 载入的镜像，不在服务器上构建。
+# 由 .github/workflows/release.yml 作为 /opt/ailindo-docs/docker-compose.yml 上传。
+#
+# docs-ailindo-app:${IMAGE_TAG}（IMAGE_TAG 由 .env 提供，缺省 latest）。卷路径全部相对
+# 本文件所在目录（/opt/ailindo-docs），与 init-letsencrypt.sh 的 `cd $(dirname $0)` 一致。
+services:
+  app:
+    image: docs-ailindo-app:${IMAGE_TAG:-latest}
+    container_name: docs-ailindo-app
+    restart: unless-stopped
+    # 运行时密钥（AI 搜索 / 反馈）。可选：文件缺失也能启动，仅对应功能降级。
+    env_file:
+      - path: ./app.env
+        required: false
+    # 仅暴露给同一 compose 网络内的 nginx，不对宿主 publish
+    expose:
+      - "3000"
+
+  nginx:
+    image: nginx:stable
+    container_name: docs-ailindo-nginx
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    # 每 6h reload 一次，加载 certbot 续期后的新证书
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+  certbot:
+    image: certbot/certbot
+    container_name: docs-ailindo-certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # 每 12h 尝试续期（certbot 默认：证书到期前约 30 天才会真正续）
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done'"

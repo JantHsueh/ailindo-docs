@@ -1,0 +1,28 @@
+# Docker build context = repo root (see deploy/Dockerfile).
+# Keep the image lean and avoid leaking local/dev state into the build.
+
+node_modules
+.next
+.git
+.github
+.idea
+.vscode
+
+# deploy runtime state (certs, rsync landing dir, local env files)
+deploy/data
+deploy/certbot
+deploy/.env
+deploy/app.env
+
+# local env / logs
+.env
+.env.local
+*.log
+
+# Second lockfile: keep only bun.lock so Next standalone doesn't warn about
+# multiple lockfiles / infer the wrong outputFileTracingRoot.
+pnpm-lock.yaml
+
+# misc
+.DS_Store
+tsconfig.tsbuildinfo

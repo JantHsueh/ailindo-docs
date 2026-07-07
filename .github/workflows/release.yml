@@ -1,0 +1,146 @@
+name: Release (build image → ship over SSH → deploy)
+
+# CI 构建 Next.js standalone 镜像 → docker save 打包 → 经 SSH 上传到 8.135.58.102 →
+# 远端 docker load 后 docker compose up -d 触发更新。不依赖任何镜像仓库。
+#
+# 触发：
+#   - workflow_dispatch：手动跑，带 init / cert_staging 开关（首次初始化服务器用）
+#   - release: published：发布 GitHub Release 时自动做一次普通更新（不初始化）
+on:
+  workflow_dispatch:
+    inputs:
+      init:
+        description: '首次初始化：建目录 / 写配置 / 申请 TLS 证书（仅首次勾选）'
+        type: boolean
+        default: false
+      cert_staging:
+        description: "证书用 Let's Encrypt staging（首次调试防限流；跑通后取消再重跑 init）"
+        type: boolean
+        default: false
+  release:
+    types: [published]
+
+# 串行化部署，避免两次发布同时 SSH 上去互相踩踏
+concurrency:
+  group: release-deploy
+  cancel-in-progress: false
+
+env:
+  IMAGE_NAME: docs-ailindo-app
+  DEPLOY_HOST: 8.135.58.102
+  DEPLOY_DIR: /opt/ailindo-docs
+  DOMAIN: docs.ailindo.com
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build standalone image (load locally)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/Dockerfile
+          load: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}
+            SOURCE_REPO=${{ vars.SOURCE_REPO || 'ailindo' }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Save image to tarball
+        run: |
+          docker save ${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}:${{ github.sha }} | gzip > image.tar.gz
+          ls -lh image.tar.gz
+
+      - name: Upload tar + config to server staging
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ env.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_SSH_PORT || 22 }}
+          source: "image.tar.gz,deploy/docker-compose.server.yml,deploy/nginx/conf.d/docs.conf,deploy/init-letsencrypt.sh"
+          target: "${{ env.DEPLOY_DIR }}/_staging"
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          # init/cert_staging 只在 workflow_dispatch 上存在；release 事件一律按普通更新处理
+          INIT: ${{ github.event_name == 'workflow_dispatch' && inputs.init && 'true' || 'false' }}
+          CERT_STAGING: ${{ github.event_name == 'workflow_dispatch' && inputs.cert_staging && '1' || '0' }}
+          IMAGE_TAG: ${{ github.sha }}
+          DEPLOY_DIR: ${{ env.DEPLOY_DIR }}
+          DOMAIN: ${{ env.DOMAIN }}
+          LE_EMAIL: ${{ secrets.LETSENCRYPT_EMAIL }}
+          APP_INKEEP_API_KEY: ${{ secrets.INKEEP_API_KEY }}
+          APP_AI_MODEL: ${{ vars.AI_MODEL }}
+          APP_AI_BASE_URL: ${{ vars.AI_BASE_URL }}
+          APP_GITHUB_APP_ID: ${{ secrets.GH_APP_ID }}
+          APP_GITHUB_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        with:
+          host: ${{ env.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_SSH_PORT || 22 }}
+          script_stop: true
+          envs: INIT,CERT_STAGING,IMAGE_TAG,DEPLOY_DIR,DOMAIN,LE_EMAIL,APP_INKEEP_API_KEY,APP_AI_MODEL,APP_AI_BASE_URL,APP_GITHUB_APP_ID,APP_GITHUB_APP_PRIVATE_KEY
+          script: |
+            set -euo pipefail
+            cd "$DEPLOY_DIR"
+
+            # 把暂存区里的配置摆到位（每次都同步，让仓库成为唯一事实源）
+            mkdir -p images nginx/conf.d certbot/conf certbot/www
+            cp -f _staging/deploy/docker-compose.server.yml docker-compose.yml
+            cp -f _staging/deploy/nginx/conf.d/docs.conf     nginx/conf.d/docs.conf
+            cp -f _staging/deploy/init-letsencrypt.sh        init-letsencrypt.sh
+            chmod +x init-letsencrypt.sh
+            mv -f _staging/image.tar.gz images/image.tar.gz
+            rm -rf _staging
+
+            # 载入 CI 送来的镜像，随后删掉 tar 省磁盘
+            gunzip -c images/image.tar.gz | docker load
+            rm -f images/image.tar.gz
+
+            if [ "$INIT" = "true" ]; then
+              umask 077
+              cat > .env <<EOF
+            DOMAIN=${DOMAIN}
+            LETSENCRYPT_EMAIL=${LE_EMAIL}
+            STAGING=${CERT_STAGING}
+            IMAGE_TAG=${IMAGE_TAG}
+            EOF
+              cat > app.env <<EOF
+            INKEEP_API_KEY=${APP_INKEEP_API_KEY}
+            AI_MODEL=${APP_AI_MODEL}
+            AI_BASE_URL=${APP_AI_BASE_URL}
+            GITHUB_APP_ID=${APP_GITHUB_APP_ID}
+            GITHUB_APP_PRIVATE_KEY="${APP_GITHUB_APP_PRIVATE_KEY}"
+            EOF
+              bash init-letsencrypt.sh          # 临时证书 → 起 nginx → 申请正式证书 → reload
+              docker compose up -d               # app + nginx + certbot
+            else
+              if [ ! -f .env ]; then
+                echo "❌ .env 缺失：服务器未初始化。请先用 workflow_dispatch 勾选 init 跑一次。" >&2
+                exit 1
+              fi
+              # 只更新 IMAGE_TAG，保留服务器上既有的 .env / app.env
+              grep -q '^IMAGE_TAG=' .env \
+                && sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=${IMAGE_TAG}|" .env \
+                || echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
+              docker compose up -d               # IMAGE_TAG 变了 → 重建 app 容器
+              docker compose exec -T nginx nginx -t && docker compose exec -T nginx nginx -s reload || true
+            fi
+
+            # 只保留 latest 与当前 sha 两个 tag，其余 docs-ailindo-app 旧镜像清掉
+            docker images --format '{{.Repository}}:{{.Tag}}' | grep '^docs-ailindo-app:' \
+              | grep -v ":latest$" | grep -v ":${IMAGE_TAG}$" | xargs -r docker rmi || true
+            docker image prune -f
+            docker compose ps
