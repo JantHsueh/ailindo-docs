@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prebuild": "tsx scripts/prebuild.ts",
+    "prebuild": "bun scripts/prebuild.ts",
     "build": "next build",
     "dev": "next dev",
     "start": "next start",

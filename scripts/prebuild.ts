@@ -23,7 +23,7 @@ async function prebuild() {
   } catch (error) {
     console.error('❌ Prebuild failed:', error);
     // Don't exit process, let the build continue
-    console.log('⚠ Build will continue but may use old or missing data\n');
+    console.log('⚠ Build will continue but not generate Change log\n');
   }
 }
 
