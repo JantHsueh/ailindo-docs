@@ -1,0 +1,137 @@
+---
+title: 配置 ChatGPT（原Codex）
+description: Codex 已改名ChatGPT，配置方式一样。下面是使用「AI 灵动」的 API 密钥配置 Codex——macOS 与 Windows 两套详细步骤，找到并编辑 config.toml、粘贴配置、重启与测试验证。
+---
+
+本文介绍如何用「AI 灵动」的 API 密钥配置 Codex。如果还没有 API 密钥，请先阅读 [AI 灵动 新手指南](/zh/docs/usage-tutorial/ailindo-guide) 完成注册并获取密钥。
+
+## macOS 配置步骤
+
+### 步骤一：找到并打开配置文件
+
+配置文件路径为：
+
+```bash
+~/.codex/config.toml
+```
+
+`~` 代表你的用户目录，即 `/Users/你的用户名`。
+
+操作方法：
+
+① 打开「终端」（Terminal）
+
+② 执行以下命令打开配置文件：
+
+```bash
+open ~/.codex/config.toml
+```
+
+③ 如果提示文件不存在，则执行以下命令创建文件夹和文件：
+
+```bash
+mkdir -p ~/.codex && nano ~/.codex/config.toml
+```
+
+这行命令会创建 `.codex` 文件夹（如果不存在），然后用 nano 编辑器打开 `config.toml` 文件（如果不存在会自动创建）。在 nano 中编辑完成后，按 `Ctrl + X`，再按 `Y`，最后按回车保存。
+
+<Callout type="warn">
+  macOS 下以点（`.`）开头的文件夹是隐藏的，在访达里默认看不到，所以推荐用终端操作。
+</Callout>
+
+### 步骤二：粘贴配置信息
+
+打开 `config.toml` 文件后，将下面这段配置完整复制粘贴到文件的最开头（将密钥替换为你自己的）：
+
+```toml
+model_provider = "ailindo"
+model = "gpt-4"
+model_reasoning_effort = "xhigh"
+
+[model_providers.ailindo]
+name = "ailindo api"
+base_url = "https://ailindo.com/v1"
+wire_api = "responses"
+experimental_bearer_token = "sk-你的API密钥"
+```
+
+<Callout type="warn" title="特别重要">
+  - 每一行必须单独成行，`[model_providers.ailindo]` 前后必须保留空行，否则配置无效。
+  - `experimental_bearer_token = "sk-你的API密钥"` 这一行里的 `sk-你的API密钥` 必须换成你获取的真实 API Key，否则配置无效。
+</Callout>
+
+### 步骤三：保存并重启 Codex
+
+1. 完全退出 Codex（不是最小化）
+2. 重新打开 Codex
+
+### 步骤四：测试验证
+
+在 Codex 对话框中输入 `hello` 或 `测试连接`，如果能正常回复，说明配置成功 ✅
+
+<Callout type="warn">
+  如果提示 `Insufficient balance`（余额不足），说明账户余额为 0，请前往 [充值订阅套餐](/zh/docs/usage-tutorial/ailindo-guide#第四步充值订阅套餐) 充值后再使用。
+</Callout>
+
+## Windows 配置步骤
+
+### 步骤一：找到并打开配置文件
+
+配置文件路径为：
+
+```powershell
+%USERPROFILE%\.codex\config.toml
+```
+
+`%USERPROFILE%` 代表 `C:\Users\你的用户名`，完整路径示例：`C:\Users\张三\.codex\config.toml`。
+
+操作方法：
+
+① 打开「此电脑」
+
+② 在顶部的地址栏中，直接复制粘贴以下路径后按回车：
+
+```powershell
+%USERPROFILE%\.codex
+```
+
+③ 如果看到 `config.toml` 文件，双击用记事本打开
+
+④ 如果文件夹是空的或没有这个文件：
+
+- 右键 → 新建 → 文本文档
+- 将新建的文件重命名为 `config.toml`（注意：需要先在「查看」菜单中勾选「文件扩展名」，才能修改后缀名）
+
+### 步骤二：粘贴配置信息
+
+打开 `config.toml` 文件后，将下面这段配置完整复制粘贴到文件的最开头（将密钥替换为你自己的）：
+
+```toml
+model_provider = "ailindo"
+model = "gpt-4"
+
+[model_providers.ailindo]
+name = "ailindo api"
+base_url = "https://ailindo.com/v1"
+wire_api = "responses"
+experimental_bearer_token = "sk-你的API密钥"
+```
+
+<Callout type="warn" title="特别重要">
+  - 每一行必须单独成行，`[model_providers.ailindo]` 前后必须保留空行，否则配置无效。
+  - `experimental_bearer_token = "sk-你的API密钥"` 这一行里的 `sk-你的API密钥` 必须换成你获取的真实 API Key，否则配置无效。
+</Callout>
+
+### 步骤三：保存并重启 Codex
+
+1. 保存文件
+2. 完全退出 Codex（不是最小化）
+3. 重新打开 Codex
+
+### 步骤四：测试验证
+
+在 Codex 对话框中输入 `你好` 或 `测试连接`，如果能正常回复，说明配置成功 ✅
+
+<Callout type="warn">
+  如果提示 `Insufficient balance`（余额不足），说明账户余额为 0，请前往 [充值订阅套餐](/zh/docs/usage-tutorial/ailindo-guide#第四步充值订阅套餐) 充值后再使用。
+</Callout>

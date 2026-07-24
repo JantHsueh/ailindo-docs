@@ -1,0 +1,170 @@
+---
+title: 配置 Claude Code
+description: 在国内使用 Claude Code 的正确姿势——从安装 Node.js、理解配置本质，到通过「AI 灵动」创建 API Key 并配置第三方模型，超详细图文教程，支持 opus4.8、gpt5.5、DeepSeek、glm 等最新模型。
+---
+
+很多朋友想在国内使用 Claude Code，受限于网络、支付订阅等问题，甚至有人好不容易搞好了，但翻墙的梯子配置不好，或者节点有问题，直接账号被封，找 Claude 客服，一点用没有。下面介绍一下，在国内使用 Claude Code 的正确姿势，大模型质量和速度都是杠杠滴。
+
+## 一、安装 Claude Code
+
+无论 Mac 还是 Windows，Claude Code 都依赖 **Node.js（≥ v18，建议 LTS）**。
+
+安装好 Node.js 后，验证：
+
+```bash
+node --version   # 应输出 v18.x.x 或更高
+npm --version
+```
+
+然后全局安装 Claude Code：
+
+```bash
+npm install -g @anthropic-ai/claude-code
+# 国内网络慢可加镜像源：--registry=https://registry.npmmirror.com/
+```
+
+验证安装：
+
+```bash
+claude --version
+```
+
+## 二、理解配置的本质
+
+Claude Code 通过两个核心环境变量决定「请求发到哪、用什么密钥」：
+
+| 变量 | 含义 |
+|------|------|
+| `ANTHROPIC_BASE_URL` | https://ailindo.com |
+| `ANTHROPIC_AUTH_TOKEN` | AI 灵动的 API Key |
+
+这里的 AI 灵动 API Key 申请步骤，会在第四章详细介绍，先来教你如何配置。
+
+## 三、创建 API Key
+
+配置过程中遇到问题的，直接问这家的客服，专业有耐心。
+
+**支持 opus4.8、gpt5.5、DeepSeek、glm 等最新模型，费用差不多是官方 1 折。**
+
+下面介绍 [AI 灵动](https://ailindo.com/) 的注册和创建 API，这家稳定质量高，费用只有官方价 1 折多，如果已经有 AI 灵动的 API Key，就可以跳过这一章了。
+
+<Callout type="info">
+  用过其他 Code planing、vibe coding、AI 中转站等方案，国内很多公司不支持全球最先进的模型，一些大厂 Code planing，也只是商业战术性的防御项目，模型笨，费用也不便宜，糟糕的售后客服，连模型名都还没认全，估计内部也没打算作为重点项目维护，后来就没再买了。
+
+  很多小型的 AI 中转站，遇到过跑路的、偷换模型的、乱扣费的、API Key 泄露的、没接正规支付的，也踩了不少坑。
+
+  大家用得比较多的是 [AI 灵动](https://ailindo.com/)，用了一段时间，从费用、稳定、模型更新、客服，感觉都不错，大家多比较后再选择。客服也很懂技术，向他学习了很多 AI 编程技术。
+</Callout>
+
+### 3.1 注册
+
+先去 [官网](https://ailindo.com/) 注册一个账号。
+
+### 3.2 创建 API Key
+
+点击 **控制台 -> API Key 管理 -> 添加 API key**。
+
+![创建 API Key](/assets/claude-code-china/create-apikey.png)
+
+会弹出一个**创建新的 API Key** 的侧边栏，输入名称，其他使用默认即可。点击「**提交**」即可创建成功。
+
+![创建新的 API Key 侧边栏](/assets/claude-code-china/apikey-sidebar.png)
+
+提交后，会有如下的弹窗。
+
+<Callout type="warn" title="密钥只展示一次，请妥善保存">
+  这里可以看出，AI 灵动的密钥管理应该是符合工业安全标准。如果你用的是其他网站，创建密钥后没有一次性密钥展示的提示，甚至是在列表里还能复制，建议就不要再用了。它们的 API Key 是明文保存在服务器的数据库，这种被盗用了，你找客服，客服也不认，他们会说这是你在用，所以跟钱有关的还是选择更安全的。
+</Callout>
+
+![API Key 创建完成](/assets/claude-code-china/apikey-created.png)
+
+至此 API Key 就创建完成了。
+
+最后一步，购买套餐，在左侧边栏的「**钱包管理**」，选择合适的套餐进行订阅，就可以愉快使用了。
+
+## 四、配置 Claude Code
+
+### 4.1 macOS 系统配置 Claude Code
+
+这个操作的目的是，在文件 `~/.claude/settings.json` 中写入配置，如果你能找到文件，直接修改即可。
+
+1. 打开「终端」，分别执行以下命令：
+
+```bash
+mkdir -p ~/.claude
+nano ~/.claude/settings.json
+```
+
+2. 把下面这段文本复制过去：
+
+```json
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "sk-ClZQs27fBVvCxxxxxxxxxxymF881AmxD3OO7",
+    "ANTHROPIC_BASE_URL": "https://ailindo.com"
+  }
+}
+```
+
+3. 保存，按 `Ctrl + O`
+4. 确认，按 `Enter`
+5. 退出，按 `Ctrl + X`
+
+检查配置是否成功，查看文件：
+
+```bash
+cat ~/.claude/settings.json
+```
+
+<Callout type="info">
+  不建议设置到环境变量中，因为在 `~/.claude/settings.json` 有任何其他值，都不会使用环境变量，也就是说这里的优先级更高。
+</Callout>
+
+### 4.2 Windows 系统配置 Claude Code
+
+配置文件路径固定为：`C:\Users\<你的用户名>\.claude\settings.json`
+
+打开 PowerShell，把下面这段代码复制进去后，按回车键：
+
+```powershell
+$dir = Join-Path $env:USERPROFILE ".claude"
+$settingsFile = Join-Path $dir "settings.json"
+New-Item -ItemType Directory -Path $dir -Force | Out-Null
+
+$settingsJson = @'
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "sk-ClZQs27fBVvCxxxxxxxxxxymF881AmxD3OO7",
+    "ANTHROPIC_BASE_URL": "https://ailindo.com"
+  }
+}
+'@
+[System.IO.File]::WriteAllText($settingsFile, $settingsJson, (New-Object System.Text.UTF8Encoding($false)))
+Write-Host "配置完成"
+```
+
+<Callout type="warn">
+  注意用 UTF-8 无 BOM 写入（上面脚本已处理），否则可能解析报错。
+</Callout>
+
+检查是否配置成功，查看文件：
+
+```powershell
+Get-Content "$env:USERPROFILE\.claude\settings.json"
+```
+
+## 五、验证 Claude 是否可用
+
+在你的项目目录下，打开终端，执行：
+
+```bash
+claude
+```
+
+初次使用会展示这样的界面：
+
+![Claude Code 初次运行界面](/assets/claude-code-china/claude-first-run.png)
+
+一直回车，显示这样的页面，就可以正常输入文字，使用了：
+
+![Claude Code 可以正常使用](/assets/claude-code-china/claude-ready.jpeg)
