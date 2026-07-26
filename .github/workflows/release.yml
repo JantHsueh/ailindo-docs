@@ -182,15 +182,21 @@ jobs:
           tar -xzf /tmp/aliyun-cli.tgz -C /tmp
           sudo mv /tmp/aliyun /usr/local/bin/aliyun
 
-          # ESA 是中心化服务，统一走 cn-hangzhou 端点。--force 让 CLI 直接按指定 version/endpoint
-          # 调用（无需 CLI 内置该产品元数据）。Type=hostname + Content.Hostnames 只刷 docs 子域；
-          # 数组元素按 aliyun CLI 的 RepeatList 约定用 .1 下标传递（→ Content.Hostnames.1）。
+          # ESA 是中心化服务，统一走 cn-hangzhou 端点。--force 让 CLI 跳过元数据校验，直接按
+          # 指定 version/endpoint 调用。两个关键点（缺一个都会失败）：
+          #   1) PurgeCaches 只接受 POST。--force 模式下 aliyun CLI 默认发 GET，服务端会回
+          #      UnsupportedHTTPMethod（This http method is not supported），所以必须显式 --method POST。
+          #   2) Content 是「整体序列化成一个 JSON 字符串」的参数：官方 SDK 会把 Content 对象
+          #      shrink 成 Content={"Hostnames":[...]} 再发。不能用 Content.Hostnames.1 这种平铺
+          #      下标——force 模式会把它原样当成一个叫 "Content.Hostnames.1" 的参数传，服务端收不到 Content。
+          # Type=hostname + Content={"Hostnames":["docs.ailindo.com"]} 只刷 docs 子域，不动同站其他子域缓存。
           aliyun esa PurgeCaches \
             --force \
+            --method POST \
             --version 2024-09-10 \
             --endpoint esa.cn-hangzhou.aliyuncs.com \
             --region cn-hangzhou \
             --SiteId "${ESA_SITE_ID}" \
             --Type hostname \
-            --Content.Hostnames.1 "${DOMAIN}"
+            --Content '{"Hostnames":["'"${DOMAIN}"'"]}'
           echo "✅ 已提交 ESA 缓存刷新任务（主机名：${DOMAIN}）。"

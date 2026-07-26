@@ -45,7 +45,7 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # 获取最近2次提交，用于检测手动翻译
+          fetch-depth: 0 # 获取完整历史，以便跨整个 push 范围（可能包含多个提交）检测变更
 
       - name: 🔧 Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -128,12 +128,32 @@ jobs:
           else
             # 正常模式：检测变更和缺失
             echo "📝 检测变更和缺失的翻译..."
-            
+
+            # 计算变更检测范围：
+            # push 事件可能一次包含多个提交，而 push 的 paths 过滤器是针对
+            # 整个 push 范围判定的。若这里只看 HEAD~1..HEAD（仅最后一个提交），
+            # 当中文文档的改动不在末尾提交时就会检测不到，从而误报 “No Translation Needed”。
+            # 因此使用 push 事件的 before..after 覆盖本次 push 的所有提交。
+            if [ "${{ github.event_name }}" = "push" ]; then
+              BEFORE_SHA="${{ github.event.before }}"
+              # 新分支首次推送时 before 为全 0；base 提交不可用时回退到 HEAD~1
+              if [ -z "$BEFORE_SHA" ] \
+                || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ] \
+                || ! git cat-file -e "${BEFORE_SHA}^{commit}" 2>/dev/null; then
+                DIFF_BASE="HEAD~1"
+              else
+                DIFF_BASE="$BEFORE_SHA"
+              fi
+            else
+              DIFF_BASE="HEAD~1"
+            fi
+            echo "🔎 变更检测范围: ${DIFF_BASE}..HEAD"
+
             # 1. 获取变更的中文文档
-            git diff --name-only HEAD~1 HEAD | grep -E '^content/docs/zh/.*\.(md|mdx)$' >> "$FILES_LIST" || true
-            
+            git diff --name-only "$DIFF_BASE" HEAD | grep -E '^content/docs/zh/.*\.(md|mdx)$' >> "$FILES_LIST" || true
+
             # 2. 获取被删除的翻译文件对应的中文源文件
-            DELETED_TRANSLATIONS=$(git diff --name-only HEAD~1 HEAD | grep -E '^content/docs/(en|ja)/.*\.(md|mdx)$' || echo "")
+            DELETED_TRANSLATIONS=$(git diff --name-only "$DIFF_BASE" HEAD | grep -E '^content/docs/(en|ja)/.*\.(md|mdx)$' || echo "")
             
             if [ ! -z "$DELETED_TRANSLATIONS" ]; then
               echo "🗑️ 检测到翻译文件被删除:"
@@ -247,5 +267,5 @@ jobs:
           else
             echo "### ℹ️ No Translation Needed" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "No Chinese documents were changed in this commit." >> $GITHUB_STEP_SUMMARY
+            echo "No Chinese documents were changed in this push." >> $GITHUB_STEP_SUMMARY
           fi
