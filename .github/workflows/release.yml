@@ -182,12 +182,13 @@ jobs:
           tar -xzf /tmp/aliyun-cli.tgz -C /tmp
           sudo mv /tmp/aliyun /usr/local/bin/aliyun
 
-          # ESA 是中心化服务，统一走 cn-hangzhou 端点。--force 让 CLI 直接按指定 version/endpoint
-          # 调用（无需 CLI 内置该产品元数据）。Type=hostname + Content.Hostnames 只刷 docs 子域；
+          # ESA 是中心化服务，统一走 cn-hangzhou 端点。--force 让 CLI 跳过 API 列表校验直接调用。
+          # 不传 --version：aliyun CLI 3.x 已将 esa 加入 products.json，会自动使用内置版本号
+          # （2024-09-10），显式指定 --version 会触发 versions.json 版本校验 bug（exit code 3）。
+          # Type=hostname + Content.Hostnames 只刷 docs 子域；
           # 数组元素按 aliyun CLI 的 RepeatList 约定用 .1 下标传递（→ Content.Hostnames.1）。
           aliyun esa PurgeCaches \
             --force \
-            --version 2024-09-10 \
             --endpoint esa.cn-hangzhou.aliyuncs.com \
             --region cn-hangzhou \
             --SiteId "${ESA_SITE_ID}" \
