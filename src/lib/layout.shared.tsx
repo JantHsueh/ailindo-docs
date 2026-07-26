@@ -18,6 +18,8 @@ export function baseOptions(locale: string): BaseLayoutProps {
   return {
     i18n,
     nav: {
+      // Clicking the logo/title leaves the docs and goes to the main site.
+      url: 'https://ailindo.com',
       title: (
         <>
           {logo}

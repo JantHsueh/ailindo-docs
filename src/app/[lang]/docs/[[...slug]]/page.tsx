@@ -1,4 +1,5 @@
 import { getPageImage, source } from '@/lib/source';
+import { i18n, getLocalePath } from '@/lib/i18n';
 import {
   DocsBody,
   DocsDescription,
@@ -68,9 +69,22 @@ export async function generateMetadata(props: {
   const page = source.getPage(slug, lang);
   if (!page) notFound();
 
+  // Self-referencing canonical + hreflang so search engines consolidate
+  // ranking on a single URL per language instead of treating locale variants
+  // as duplicate content.
+  const docsPath = slug?.length ? `docs/${slug.join('/')}` : 'docs';
+  const canonical = getLocalePath(lang, docsPath);
+
+  const languages: Record<string, string> = {};
+  for (const l of i18n.languages) {
+    if (source.getPage(slug, l)) languages[l] = getLocalePath(l, docsPath);
+  }
+  languages['x-default'] = languages[i18n.defaultLanguage] ?? canonical;
+
   return {
     title: page.data.title,
     description: page.data.description,
-    openGraph: { images: getPageImage(page).url },
+    alternates: { canonical, languages },
+    openGraph: { url: canonical, images: getPageImage(page).url },
   };
 }
