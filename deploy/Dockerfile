@@ -28,7 +28,7 @@ ENV NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID} \
     GITHUB_TOKEN=${GITHUB_TOKEN}
 
 # prebuild(生成 changelog) → next build。prebuild 失败会被脚本 catch，不阻断构建。
-RUN bun run build
+RUN bun scripts/prebuild.ts && bun run next build
 
 # ---------- runner ----------
 FROM node:22-slim AS runner
