@@ -148,3 +148,49 @@ jobs:
               | grep -v ":latest$" | grep -v ":${IMAGE_TAG}$" | xargs -r docker rmi || true
             docker image prune -f
             docker compose ps
+
+      # 部署成功后刷新阿里云 ESA 上 docs.ailindo.com 这个主机名的缓存。
+      # 站点是 ailindo.com（下含 docs / cn 等多个子域名），所以用 Type=hostname 只刷 docs 子域，
+      # 不动同站点下其他子域名的缓存。
+      # Next.js 对静态页面默认发 `Cache-Control: s-maxage=31536000`（1 年），ESA 会照此
+      # 长期缓存旧页面；这里在每次部署后主动 purge，让边缘节点回源拉取新内容。
+      #
+      # 需要三个 GitHub Secrets（缺任一则本步骤自动跳过，不影响部署）：
+      #   ALIYUN_ACCESS_KEY_ID / ALIYUN_ACCESS_KEY_SECRET  —— 建议用只授权 esa:PurgeCaches 的 RAM 用户
+      #   ESA_SITE_ID                                       —— ESA 控制台里 ailindo.com 站点的数字站点 ID
+      # 刷新的主机名直接取顶层 env.DOMAIN（docs.ailindo.com）。首次初始化（init）时跳过。
+      - name: Purge ESA cache (docs.ailindo.com)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.init) }}
+        env:
+          ALIBABA_CLOUD_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          ALIBABA_CLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+          ESA_SITE_ID: ${{ secrets.ESA_SITE_ID }}
+          ALIYUN_CLI_VERSION: '3.4.10'
+        run: |
+          set -euo pipefail
+
+          if [ -z "${ALIBABA_CLOUD_ACCESS_KEY_ID:-}" ] \
+            || [ -z "${ALIBABA_CLOUD_ACCESS_KEY_SECRET:-}" ] \
+            || [ -z "${ESA_SITE_ID:-}" ]; then
+            echo "⚠️  未配置 ALIYUN_ACCESS_KEY_ID / ALIYUN_ACCESS_KEY_SECRET / ESA_SITE_ID，跳过 ESA 刷新。"
+            exit 0
+          fi
+
+          # 装官方 aliyun CLI（单二进制），用它处理 ESA 的 RPC 签名
+          curl -fsSL -o /tmp/aliyun-cli.tgz \
+            "https://github.com/aliyun/aliyun-cli/releases/download/v${ALIYUN_CLI_VERSION}/aliyun-cli-linux-${ALIYUN_CLI_VERSION}-amd64.tgz"
+          tar -xzf /tmp/aliyun-cli.tgz -C /tmp
+          sudo mv /tmp/aliyun /usr/local/bin/aliyun
+
+          # ESA 是中心化服务，统一走 cn-hangzhou 端点。--force 让 CLI 直接按指定 version/endpoint
+          # 调用（无需 CLI 内置该产品元数据）。Type=hostname + Content.Hostnames 只刷 docs 子域；
+          # 数组元素按 aliyun CLI 的 RepeatList 约定用 .1 下标传递（→ Content.Hostnames.1）。
+          aliyun esa PurgeCaches \
+            --force \
+            --version 2024-09-10 \
+            --endpoint esa.cn-hangzhou.aliyuncs.com \
+            --region cn-hangzhou \
+            --SiteId "${ESA_SITE_ID}" \
+            --Type hostname \
+            --Content.Hostnames.1 "${DOMAIN}"
+          echo "✅ 已提交 ESA 缓存刷新任务（主机名：${DOMAIN}）。"
