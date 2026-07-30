@@ -7,23 +7,19 @@ description: 从注册登录、获取 API 密钥，到配置 Claude Code、Codex
 
 ## 第一步：注册并自动登录
 
-1. 打开浏览器访问 [https://ailindo.com](https://ailindo.com)
-2. 点击页面右上角的「**注册**」按钮
+1、 点击[注册](https://ailindo.com/register)，进入注册页面。
+
 
 ![点击注册按钮](/assets/ailindo-guide/register-button.png)
 
-3. 填写信息：
-   - **邮箱**：输入常用电子邮箱（用于接收验证码）
-   - **密码**：设置登录密码（建议字母 + 数字，不少于 6 位）
-   - **确认密码**：再次输入确认
-   - **验证码**：点击「获取验证码」，查收邮箱后填入
-4. 点击「**注册**」，注册成功即自动登录，无需重复输入账号密码。
+
+2、注册成功后，会自动登录
 
 ![填写注册信息](/assets/ailindo-guide/register-form.png)
 
-## 第二步：获取 API 密钥
+## 第二步：获取 API Key
 
-API 密钥是你调用 AI 模型的「通行证」，生成后请妥善保存。
+API Key是你调用 AI 模型的「通行证」，生成后请妥善保存。
 
 1. 在控制台中找到「**API Key 管理**」，点击「**添加 API key**」
 
@@ -46,7 +42,20 @@ import { Card, Cards } from 'fumadocs-ui/components/card';
 
 ## 第三步：配置 AI 工具
 
-本指南集成了市面上主流 AI 工具的配置方法，请根据你使用的工具，点击对应链接查看详细图文教程：
+### 使用 AI 灵动软件，自动配置（强烈推荐 ⭐⭐⭐⭐⭐）
+
+AI 灵动软件集成了市面上主流的 AI 工具，一键安装、自动配置好所有环境，无需折腾代码和命令行，下载即用。
+
+详细教程请参考：[https://docs.ailindo.com/zh/docs/usage-tutorial/ailindo](https://docs.ailindo.com/zh/docs/usage-tutorial/ailindo)
+
+软件核心优势：
+
+- **下载即用**：无需折腾代码和环境，安装即可使用
+- **自动配置**：所有工具一键集成，无需手动配置任何参数
+- **图形化操作**：全部在可视界面中完成，点点鼠标就行
+- **一键切换**：想用哪个 AI 工具直接切换，不用改任何配置
+
+各 AI 工具的手动配置详细图文教程，如下：
 
 <Cards>
   <Card
@@ -71,24 +80,9 @@ import { Card, Cards } from 'fumadocs-ui/components/card';
   />
 </Cards>
 
-除以上手动配置外，还有两种更省心的使用方式：
 
-### 无需配置：使用 AI 灵动软件（强烈推荐 ⭐⭐⭐⭐⭐）
-
-这里最推荐下载 AI 灵动软件，软件集成了市面上主流的 AI 工具，一键安装、自动配置好所有环境，无需折腾代码和命令行，下载即用。
-
-详细教程请参考：[https://docs.ailindo.com/zh/docs/usage-tutorial/ailindo](https://docs.ailindo.com/zh/docs/usage-tutorial/ailindo)
-
-软件核心优势：
-
-- **下载即用**：无需折腾代码和环境，安装即可使用
-- **自动配置**：所有工具一键集成，无需手动配置任何参数
-- **图形化操作**：全部在可视界面中完成，点点鼠标就行
-- **一键切换**：想用哪个 AI 工具直接切换，不用改任何配置
 
 ### 备选：直接在 AI 灵动网页上聊天
-
-如果暂时不想安装软件，可以直接在网页上与 AI 对话，同样不需要任何技术配置。
 
 1. 登录后，点击顶部导航栏的「**控制台**」-「**操练场**」
 2. 在文本框右下角选择你想要使用的模型
@@ -98,11 +92,9 @@ import { Card, Cards } from 'fumadocs-ui/components/card';
 
 ## 第四步：充值订阅套餐
 
-配置好工具后，需要为账户充值才能正常调用模型。**新户首充享八折优惠！选大套餐更省钱。**
+配置好工具后，需要充值才能正常使用。 **新户首充享八折优惠！选大套餐更省钱。**
 
-1. 在页面顶部导航栏找到「**控制台**」或「**钱包管理**」入口
-2. 根据你的使用需求选择对应套餐
-3. 按照页面提示完成支付（支持微信和支付宝）
+点击 [立即充值](https://ailindo.com/console/topup)，进入充值页面。
 
 ![充值套餐](/assets/ailindo-guide/recharge-plans.png)
 
