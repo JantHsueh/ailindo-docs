@@ -41,11 +41,11 @@ mkdir -p ~/.codex && nano ~/.codex/config.toml
 
 ### 步骤二：粘贴配置信息
 
-打开 `config.toml` 文件后，将下面这段配置完整复制粘贴到文件的最开头（将密钥替换为你自己的）：
+打开 `config.toml` 文件后，将下面这段配置完整复制粘贴到文件的最开头（填写模型名称，并将密钥替换为你自己的）：
 
 ```toml
 model_provider = "ailindo"
-model = "gpt-4"
+model = "gpt-5.6-sol"
 model_reasoning_effort = "xhigh"
 
 [model_providers.ailindo]
@@ -55,35 +55,20 @@ wire_api = "responses"
 experimental_bearer_token = "sk-你的API密钥"
 ```
 
-<Callout type="warn" title="特别重要">
-  - 每一行必须单独成行，`[model_providers.ailindo]` 前后必须保留空行，否则配置无效。
-  - `experimental_bearer_token = "sk-你的API密钥"` 这一行里的 `sk-你的API密钥` 必须换成你获取的真实 API Key，否则配置无效。
-</Callout>
 
-### 步骤三：保存并重启 Codex
+### 步骤三：测试验证
 
-1. 完全退出 Codex（不是最小化）
-2. 重新打开 Codex
+保存文件并重启codex,在文本框中输入对话，如能正常回复，说明配置成功✅
 
-### 步骤四：测试验证
 
-在 Codex 对话框中输入 `hello` 或 `测试连接`，如果能正常回复，说明配置成功 ✅
 
-<Callout type="warn">
-  如果提示 `Insufficient balance`（余额不足），说明账户余额为 0，请前往 [充值订阅套餐](/zh/docs/usage-tutorial/ailindo-guide#第四步充值订阅套餐) 充值后再使用。
-</Callout>
 
 ## Windows 配置步骤
 
 ### 步骤一：找到并打开配置文件
 
-配置文件路径为：
-
-```powershell
-%USERPROFILE%\.codex\config.toml
-```
-
-`%USERPROFILE%` 代表 `C:\Users\你的用户名`，完整路径示例：`C:\Users\张三\.codex\config.toml`。
+配置文件路径如下：
+示例：`C:\Users\张三\.codex\config.toml`
 
 操作方法：
 
@@ -94,21 +79,22 @@ experimental_bearer_token = "sk-你的API密钥"
 ```powershell
 %USERPROFILE%\.codex
 ```
+![codex 路径](/assets/ailindo-guide/codex-guide.png)
 
-③ 如果看到 `config.toml` 文件，双击用记事本打开
+③ 找到 `config.toml` 文件，用记事本打开
 
 ④ 如果文件夹是空的或没有这个文件：
 
-- 右键 → 新建 → 文本文档
+- 新建 → 文本文档
 - 将新建的文件重命名为 `config.toml`（注意：需要先在「查看」菜单中勾选「文件扩展名」，才能修改后缀名）
 
 ### 步骤二：粘贴配置信息
 
-打开 `config.toml` 文件后，将下面这段配置完整复制粘贴到文件的最开头（将密钥替换为你自己的）：
+打开 `config.toml` 文件后，将下面这段配置完整复制粘贴到文件的最开头（填写模型名称，并将密钥替换为你自己的）：
 
 ```toml
 model_provider = "ailindo"
-model = "gpt-4"
+model = "gpt-5.6-sol"
 
 [model_providers.ailindo]
 name = "ailindo api"
@@ -116,22 +102,9 @@ base_url = "https://ailindo.com/v1"
 wire_api = "responses"
 experimental_bearer_token = "sk-你的API密钥"
 ```
+![codex 填写模型信息](/assets/ailindo-guide/codex-api.png)
 
-<Callout type="warn" title="特别重要">
-  - 每一行必须单独成行，`[model_providers.ailindo]` 前后必须保留空行，否则配置无效。
-  - `experimental_bearer_token = "sk-你的API密钥"` 这一行里的 `sk-你的API密钥` 必须换成你获取的真实 API Key，否则配置无效。
-</Callout>
+### 步骤三：测试验证
 
-### 步骤三：保存并重启 Codex
-
-1. 保存文件
-2. 完全退出 Codex（不是最小化）
-3. 重新打开 Codex
-
-### 步骤四：测试验证
-
-在 Codex 对话框中输入 `你好` 或 `测试连接`，如果能正常回复，说明配置成功 ✅
-
-<Callout type="warn">
-  如果提示 `Insufficient balance`（余额不足），说明账户余额为 0，请前往 [充值订阅套餐](/zh/docs/usage-tutorial/ailindo-guide#第四步充值订阅套餐) 充值后再使用。
-</Callout>
+保存文件并重启codex,在文本框中输入对话，如能正常回复，说明配置成功✅
+![codex 对话](/assets/ailindo-guide/codex-chat.png)
