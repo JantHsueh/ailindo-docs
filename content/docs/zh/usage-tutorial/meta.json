@@ -2,5 +2,16 @@
   "title": "使用教程",
   "icon": "BookOpen",
   "defaultOpen": true,
-  "pages": ["index", "how-to-choose-ai-relay", "ailindo-guide", "ailindo", "claude-code-china", "claude-desktop-cn","ailindo-codex", "ailindo-trae", "ailindo-workbuddy"]
+  "pages": [
+    "index",
+    "ailindo-chatgpt-claude",
+    "how-to-choose-ai-relay",
+    "ailindo-guide",
+    "ailindo",
+    "claude-code-china",
+    "claude-desktop-cn",
+    "ailindo-codex",
+    "ailindo-trae",
+    "ailindo-workbuddy"
+  ]
 }

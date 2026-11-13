@@ -1,0 +1,159 @@
+---
+title: 一键安装 ChatGPT（原Codex）、Claude Code，免配置使用最新模型，详细图文教程
+description: 使用「AI 灵动」一键下载安装并自动配置 ChatGPT（原Codex）、Claude Code，无需手动配置 API Key，即可使用各家最新模型，附模型列表与详细操作截图。
+---
+
+本文介绍如何一键安装 ChatGPT（原Codex）、Claude，免配置，直接使用所有模型。很多人知道如何配置 API Key，这里就不多说了。但是，在 Codex 中想要完美调用第三方模型，需要自己做很多适配工作，包括工具调用的转换、reasoning effort 的映射、MCP 收集和名称适配等等。
+
+下面介绍如何一键安装 ChatGPT，不需要配置，直接就能用各家最新大模型。
+
+## 一、先看效果图
+
+Codex 桌面版中查看模型列表：
+
+![Codex 桌面版模型列表（一）](/assets/ailindo-guide/chatgpt-models-01.jpeg)
+
+![Codex 桌面版模型列表（二）](/assets/ailindo-guide/chatgpt-models-02.jpeg)
+
+![Codex 桌面版模型列表（三）](/assets/ailindo-guide/chatgpt-models-03.jpeg)
+
+Claude 桌面版的模型列表：
+
+![Claude 桌面版模型列表](/assets/ailindo-guide/claude-desktop-models.png)
+
+Claude 系列的模型，就在 Claude 自家桌面版中使用，效果最好。
+
+截至北京时间 **2026-11-12**，可用各家的最新模型，模型介绍如下（旧模型也同样支持，这里只列出同价位的新模型）。
+
+### 🟠 Claude（Anthropic）
+
+| 型号 | 定位 |
+| --- | --- |
+| **Fable 5.2** | 面向高难度技术工作，在编码、金融、科学领域树立新标杆 |
+| **Fable 5.1** | 面向高难度技术工作，在编码、金融、科学领域树立新标杆 |
+| **Opus 5.5** | 在智能体编码与知识工作上领先，典型负载下运行成本比 Opus 5 低 40%；9 月发布 |
+| **Sonnet 5.5** | 比 Sonnet 5 快 30% 以上，多数工作成本最多降低 30% |
+| **Haiku 5.5** | 10 月 7 日发布，上下文窗口 1M，价格 $0.10/$0.50（每百万 token，提示词 ≤ 10 万时） |
+
+---
+
+### 🟢 GPT（OpenAI）
+
+**🆕 最新旗舰：GPT-6 家族**
+
+| 型号 | 说明 |
+| --- | --- |
+| **GPT-6 Astra** | 最强、对齐度最高的模型，在计算机使用、编码、网络安全和科学上达到 SOTA（9 月 3 日前后发布） |
+| **GPT-6.1 Sol** | 9 月 29 日更新的最新模型；API 文档建议用它平衡智能与成本 |
+| **GPT-6.1 Terra** | 9 月 29 日更新的最新模型；API 文档建议用它平衡智能与成本 |
+
+---
+
+### 🔵 Gemini（Google）
+
+**🆕 最新旗舰：Gemini 4 系列**
+
+| 型号 | 说明 |
+| --- | --- |
+| **Gemini 4 Carbon** | 已向开发者、企业、科学家和消费者开放（页面显示约 1 天前）；擅长需要多智能体协作的工程任务，如多包迁移、跨子系统根因排查 |
+| **Gemini 4 Argon** | 擅长编码、金融、法律、网络安全和科学等领域的复杂任务；约 1 个月前上线 |
+| **Gemini 3.8 Flash** | 最智能的 Flash 模型，面向长程软件工程、自主智能体和复杂企业工作流 |
+
+---
+
+### ⚫ Grok（xAI）
+
+| 型号 | 说明 |
+| --- | --- |
+| **Grok 4.7** | 🆕 当前最新 |
+| **Grok 4.6** | 上一代 |
+
+---
+
+### 🐋 DeepSeek
+
+| 型号 | 说明 |
+| --- | --- |
+| **DeepSeek V4.1-Flash** | 🆕 Flash 档，最新版本 |
+| **DeepSeek V4-Pro** | Pro 档 |
+
+---
+
+### 🌙 Kimi（月之暗面）
+
+| 型号 | 说明 |
+| --- | --- |
+| **Kimi K3-Pro** | 🆕 K3 系列 Pro 档 |
+
+---
+
+### 🧠 GLM（智谱）
+
+| 型号 | 说明 |
+| --- | --- |
+| **GLM-5.3** | 🆕 标准版 |
+| **GLM-5.3 Flash** | Flash 档 |
+
+---
+
+### 🟣 MiniMax
+
+| 型号 | 说明 |
+| --- | --- |
+| **MiniMax-M3** | 🆕 M3 系列 |
+
+---
+
+### ☁️ Qwen（阿里）
+
+| 型号 | 说明 |
+| --- | --- |
+| **Qwen 3.8 Flash** | 🆕 Flash 档 |
+
+---
+
+## 二、一键安装 ChatGPT（原Codex）、Claude，使用最新模型
+
+**很多用户来问：**
+
+- 最近 Claude 封号严重，有什么简单易用的好渠道？
+- 怎么少花钱，还能同时使用 Claude Fable 5.1、Opus 5.5，GPT-6 Astra、GPT-6.1 Sol、GLM、DeepSeek 等各家最新模型？
+- Claude 如何配置第三方 Key？
+- ChatGPT Codex 如何配置自定义 API Key？
+- Claude 遇到网络错误打不开，报错如下怎么办？
+
+  ```text
+  Couldn't connect to Claude
+  Your network redirected this request to www.anthropic.com. Contact
+  your IT administrator.
+  ```
+
+- Claude 的 workspace 用不了？
+- 国内怎么用 Claude、GPT 最新模型？
+- Claude、GPT 注册账户、充值教程？
+- Codex、Claude 怎么下载，比 WorkBuddy 好用多少？
+
+所有问题，用 AI 灵动软件彻底全部解决。一键点击，Claude Code、Codex、ChatGPT 自动安装配置，打开直接用。如果觉得好用，帮忙点赞收藏。
+
+相信你也看了不少文章，犹豫到底选哪家更好、更靠谱。**可以先免费试用一下**，价格在市面上也有较高的性价比。付费后不满意，可自助退款。大厂合作，性能、速度、网络优化，都是一流。
+
+### 2.1 使用「AI 灵动」软件
+
+用「AI 灵动」软件，下载 Claude、ChatGPT、安装、配置全程自动操作，无需手动干预。
+
+![AI 灵动软件中的 AI 工具安装与打开入口](/assets/ailindo-guide/ailindo-app-launcher.png)
+
+- 如果未安装，显示的是「安装并打开」。
+- 如果已经安装，显示的是「打开」。
+
+例如：点击「ChatGPT」的「打开」按钮，就可以直接使用了，效果如下：
+
+![通过 AI 灵动打开 ChatGPT 后的使用效果](/assets/ailindo-guide/chatgpt-ready.png)
+
+### 2.2 下载地址
+
+在 [https://ailindo.com/software](https://ailindo.com/software) 下载 AI 灵动软件。
+
+### 2.3 安装
+
+如果软件安装遇到问题，可参考[官网教程](/zh/docs/usage-tutorial/ailindo)。
