@@ -33,19 +33,22 @@ on:
         type: string
         default: ''
 
-# 设置权限
+# 默认只读；仅翻译 job 为创建 PR 提升权限。
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   translate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # 获取完整历史，以便跨整个 push 范围（可能包含多个提交）检测变更
+          persist-credentials: false
 
       - name: 🔧 Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -57,9 +60,10 @@ jobs:
 
       - name: 🔍 Get changed files
         id: changed-files
+        env:
+          MODE: ${{ inputs.mode || 'changed' }}
+          SPECIFIC_PATH: ${{ inputs.path }}
         run: |
-          MODE="${{ github.event.inputs.mode }}"
-
           # 如果是 push 触发，默认为 changed 模式
           if [ -z "$MODE" ]; then
             MODE="changed"
@@ -77,14 +81,21 @@ jobs:
 
           elif [ "$MODE" = "specific_path" ]; then
             # 翻译指定路径
-            SPECIFIC_PATH="${{ github.event.inputs.path }}"
             if [ -z "$SPECIFIC_PATH" ]; then
               echo "❌ 错误: specific_path 模式需要指定路径"
               exit 1
             fi
             
             # 构建完整路径
-            FULL_PATH="content/docs/zh/$SPECIFIC_PATH"
+            ZH_ROOT="$(realpath content/docs/zh)"
+            if ! FULL_PATH="$(realpath -- "$ZH_ROOT/$SPECIFIC_PATH" 2>/dev/null)"; then
+              echo "❌ 错误: 路径不存在"
+              exit 1
+            fi
+            if [[ "$FULL_PATH" != "$ZH_ROOT" && "$FULL_PATH" != "$ZH_ROOT/"* ]]; then
+              echo "❌ 错误: 路径必须位于 content/docs/zh 内"
+              exit 1
+            fi
             
             if [ ! -e "$FULL_PATH" ]; then
               echo "❌ 错误: 路径不存在: $FULL_PATH"
@@ -199,7 +210,6 @@ jobs:
       - name: 🌐 Translate documents
         if: steps.changed-files.outputs.has_changes == 'true'
         run: |
-          MODE="${{ github.event.inputs.mode }}"
           IS_PUSH="${{ github.event_name == 'push' }}"
 
           # 读取文件列表并用 xargs 正确处理特殊字符
@@ -207,7 +217,7 @@ jobs:
             echo "🔄 强制重新翻译所有文件..."
             FORCE_TRANSLATE=true xargs -d '\n' bun run translate < /tmp/translate_files.txt
           elif [ "$MODE" = "specific_path" ]; then
-            echo "📁 翻译指定路径: ${{ github.event.inputs.path }}"
+            echo "📁 翻译指定路径: $SPECIFIC_PATH"
             FORCE_TRANSLATE=true xargs -d '\n' bun run translate < /tmp/translate_files.txt
           elif [ "$IS_PUSH" = "true" ]; then
             echo "🌐 翻译文件（push 触发，强制模式）..."
@@ -217,6 +227,8 @@ jobs:
             xargs -d '\n' bun run translate < /tmp/translate_files.txt
           fi
         env:
+          MODE: ${{ inputs.mode || 'changed' }}
+          SPECIFIC_PATH: ${{ inputs.path }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL || 'gemini-2.5-flash' }}

@@ -7,6 +7,9 @@ node_modules
 .github
 .idea
 .vscode
+.claude
+.codex
+.agents
 
 # deploy runtime state (certs, rsync landing dir, local env files)
 deploy/data
@@ -15,8 +18,12 @@ deploy/.env
 deploy/app.env
 
 # local env / logs
-.env
-.env.local
+**/.env*
+**/app.env
+**/*.pem
+**/*.key
+**/id_rsa
+**/id_ed25519
 *.log
 
 # Second lockfile: keep only bun.lock so Next standalone doesn't warn about

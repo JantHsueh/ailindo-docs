@@ -19,16 +19,16 @@ RUN bun install --frozen-lockfile
 # 构建期参数：
 #   NEXT_PUBLIC_GA_ID  Google Analytics（NEXT_PUBLIC_* 会被内联进前端产物，必须构建期给）
 #   SOURCE_REPO        prebuild 生成 changelog 抓取的源仓库
-#   GITHUB_TOKEN       可选，避免 prebuild 抓 changelog 时被 GitHub 限流
+#   github_token       可选 BuildKit secret，避免 prebuild 抓 changelog 时被 GitHub 限流
+#                      不可使用 ARG / ENV 传递令牌，以免进入镜像元数据与构建缓存。
 ARG NEXT_PUBLIC_GA_ID=""
 ARG SOURCE_REPO="ailindo"
-ARG GITHUB_TOKEN=""
 ENV NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID} \
-    SOURCE_REPO=${SOURCE_REPO} \
-    GITHUB_TOKEN=${GITHUB_TOKEN}
+    SOURCE_REPO=${SOURCE_REPO}
 
 # prebuild(生成 changelog) → next build。prebuild 失败会被脚本 catch，不阻断构建。
-RUN bun run build
+RUN --mount=type=secret,id=github_token \
+    GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)" bun run build
 
 # ---------- runner ----------
 FROM node:22-slim AS runner

@@ -10,6 +10,7 @@
     "postinstall": "fumadocs-mdx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "check:tutorial-images": "bun scripts/check-tutorial-images.ts",
     "translate": "bun scripts/translate-docs.ts",
     "translate:all": "bun scripts/translate-docs.ts",
     "translate:force": "bun run translate",

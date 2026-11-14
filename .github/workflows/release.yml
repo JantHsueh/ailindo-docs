@@ -1,6 +1,6 @@
 name: Release (build image → ship over SSH → deploy)
 
-# CI 构建 Next.js standalone 镜像 → docker save 打包 → 经 SSH 上传到 8.135.58.102 →
+# CI 构建 Next.js standalone 镜像 → docker save 打包 → 经 SSH 上传到部署服务器 →
 # 远端 docker load 后 docker compose up -d 触发更新。不依赖任何镜像仓库。
 #
 # 触发：
@@ -20,6 +20,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 # 串行化部署，避免两次发布同时 SSH 上去互相踩踏
 concurrency:
   group: release-deploy
@@ -27,15 +30,25 @@ concurrency:
 
 env:
   IMAGE_NAME: docs-ailindo-app
-  DEPLOY_HOST: 8.135.58.102
+  DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
   DEPLOY_DIR: /opt/ailindo-docs
   DOMAIN: docs.ailindo.com
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Validate deployment configuration
+        run: |
+          if [ -z "$DEPLOY_HOST" ]; then
+            echo "::error::请先配置仓库 Secret DEPLOY_HOST（部署服务器地址）。"
+            exit 1
+          fi
 
       - uses: docker/setup-buildx-action@v3
 
@@ -51,7 +64,8 @@ jobs:
           build-args: |
             NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}
             SOURCE_REPO=${{ vars.SOURCE_REPO }}
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          secrets: |
+            github_token=${{ secrets.GITHUB_TOKEN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -67,8 +81,9 @@ jobs:
           username: ${{ secrets.DEPLOY_SSH_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_SSH_PORT || 22 }}
-          source: "image.tar.gz,deploy/docker-compose.server.yml,deploy/nginx/conf.d/docs.conf,deploy/init-letsencrypt.sh"
-          target: "${{ env.DEPLOY_DIR }}/_staging"
+          fingerprint: ${{ secrets.DEPLOY_SSH_FINGERPRINT }}
+          source: 'image.tar.gz,deploy/docker-compose.server.yml,deploy/nginx/conf.d/docs.conf,deploy/init-letsencrypt.sh'
+          target: '${{ env.DEPLOY_DIR }}/_staging'
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.2
@@ -90,6 +105,7 @@ jobs:
           username: ${{ secrets.DEPLOY_SSH_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_SSH_PORT || 22 }}
+          fingerprint: ${{ secrets.DEPLOY_SSH_FINGERPRINT }}
           script_stop: true
           envs: INIT,CERT_STAGING,IMAGE_TAG,DEPLOY_DIR,DOMAIN,LE_EMAIL,APP_INKEEP_API_KEY,APP_AI_MODEL,APP_AI_BASE_URL,APP_GITHUB_APP_ID,APP_GITHUB_APP_PRIVATE_KEY
           script: |

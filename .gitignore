@@ -24,8 +24,14 @@ yarn-error.log*
 .cursor/
 
 # others
-.env
-.env*.local
+.env*
+!.env.example
+!.env.*.example
+app.env
+*.key
+id_rsa
+id_ed25519
+.claude/
 .vercel
 next-env.d.ts
 .idea/
