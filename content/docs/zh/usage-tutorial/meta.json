@@ -4,12 +4,13 @@
   "defaultOpen": true,
   "pages": [
     "index",
-    "ailindo-chatgpt-claude",
-    "how-to-choose-ai-relay",
     "ailindo-guide",
     "ailindo",
+    "ailindo-chatgpt-claude",
+    "ailindo-comfyui",
     "claude-code-china",
     "claude-desktop-cn",
+    "how-to-choose-ai-relay",
     "ailindo-codex",
     "ailindo-trae",
     "ailindo-workbuddy"
