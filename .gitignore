@@ -32,6 +32,14 @@ app.env
 id_rsa
 id_ed25519
 .claude/
+# Track only the shared Claude Code skill entrypoint; keep local config ignored.
+!/.claude/
+/.claude/*
+!/.claude/skills/
+/.claude/skills/*
+!/.claude/skills/push-and-release/
+/.claude/skills/push-and-release/*
+!/.claude/skills/push-and-release/SKILL.md
 .vercel
 next-env.d.ts
 .idea/
