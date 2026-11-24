@@ -1,0 +1,6 @@
+{
+  "title": "近期 AI 大事",
+  "icon": "Newspaper",
+  "defaultOpen": true,
+  "pages": ["index", "ai-riemann-hypothesis"]
+}

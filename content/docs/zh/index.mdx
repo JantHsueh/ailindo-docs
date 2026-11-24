@@ -1,12 +1,12 @@
 ---
 title: 文档
-description: API 接口文档
+description: AI 灵动使用教程、近期 AI 大事与模型 API 参考。
 ---
 
 import { Card, Cards } from 'fumadocs-ui/components/card';
-import { Code2, BookOpen } from 'lucide-react';
+import { Code2, BookOpen, Newspaper } from 'lucide-react';
 
-欢迎查阅接口文档。下面是完整的 AI 模型 API 参考。
+在这里，你可以查阅使用教程、了解近期 AI 大事，或直接翻阅模型 API 参考。
 
 <Cards>
   <Card
@@ -14,6 +14,12 @@ import { Code2, BookOpen } from 'lucide-react';
     title="使用教程"
     description="AI 灵动 使用教程与上手指南。"
     href="/zh/docs/usage-tutorial"
+  />
+  <Card
+    icon={<Newspaper />}
+    title="近期 AI 大事"
+    description="读懂值得关注的 AI 进展：发生了什么，为什么重要。"
+    href="/zh/docs/ai-news"
   />
   <Card
     icon={<Code2 />}
