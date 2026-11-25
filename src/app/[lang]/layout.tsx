@@ -1,9 +1,10 @@
 import { defineI18nUI } from 'fumadocs-ui/i18n';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { i18n } from '@/lib/i18n';
 import { Provider } from '@/components/provider';
 import '../global.css';
-import type { Metadata } from 'next';
-import { createMetadata, baseUrl } from '@/lib/metadata';
+import type { Metadata, Viewport } from 'next';
+import { createMetadata, baseUrl, htmlLang, siteMeta } from '@/lib/metadata';
 import { notFound } from 'next/navigation';
 
 const { provider } = defineI18nUI(i18n, {
@@ -38,82 +39,61 @@ const { provider } = defineI18nUI(i18n, {
   },
 });
 
-const titleMap: Record<
-  string,
-  { default: string; template: string; description: string }
-> = {
-  en: {
-    default: 'AI 灵动',
-    template: '%s | AI 灵动',
-    description: "China's leading aggregated AI API relay platform.",
-  },
-  zh: {
-    default: 'AI 灵动',
-    template: '%s | AI 灵动',
-    description: '国内领先的聚合 AI 中转站',
-  },
-  ja: {
-    default: 'AI 灵动',
-    template: '%s | AI 灵动',
-    description: '国内をリードする統合型 AI 中継プラットフォーム。',
-  },
-};
-
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const lang = (await params).lang;
-  const titles = titleMap[lang] || titleMap.en;
+  const meta = siteMeta[lang] || siteMeta.zh;
 
-  return createMetadata({
-    metadataBase: baseUrl,
-    title: {
-      default: titles.default,
-      template: titles.template,
-    },
-    description: titles.description,
-    keywords: [
-      'AI Infrastructure',
-      'AI Gateway',
-      'AI Asset Management',
-      'API Orchestration',
-      'AI Application Platform',
-      'Multi-Model Integration',
-      'Enterprise AI',
-      'AI Ecosystem',
-      'Unified AI Interface',
-      'Intelligent API Management',
-    ],
-    authors: [{ name: 'AI 灵动' }],
-    creator: 'AI 灵动',
-    alternates: {
-      languages: {
-        en: '/en',
-        zh: '/zh',
-        ja: '/ja',
+  return {
+    ...createMetadata({
+      title: {
+        default: meta.default,
+        template: meta.template,
       },
+      description: meta.description,
+      keywords: meta.keywords,
+      authors: [{ name: 'AI 灵动' }],
+      creator: 'AI 灵动',
+      openGraph: {
+        type: 'website',
+        locale: htmlLang[lang] ?? lang,
+        title: meta.default,
+        description: meta.description,
+        siteName: 'AI 灵动',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: meta.default,
+        description: meta.description,
+      },
+    }),
+    metadataBase: baseUrl,
+    other: {
+      // 百度站长平台的 meta 验证码。必须走 Metadata API：手写在 <head> 里的
+      // <meta name="..."> 会被 React/Next 的 metadata 提升机制吞掉。
+      'baidu-site-verification': 'codeva-7jrCZp2xus',
     },
-    openGraph: {
-      type: 'website',
-      locale: lang,
-      title: titles.default,
-      description: titles.description,
-      siteName: 'AI 灵动',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: titles.default,
-      description: titles.description,
-    },
-  });
+  };
 }
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0A0A0A' },
+    { media: '(prefers-color-scheme: light)', color: '#fff' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export async function generateStaticParams() {
   return i18n.languages.map((lang) => ({ lang }));
 }
 
+// 这是站点的根布局（没有 app/layout.tsx），这样 <html lang> 能按语言输出。
+// 百度不执行 JS，只能靠 lang 和内容判断页面语言。
 export default async function RootLayout({
   params,
   children,
@@ -129,8 +109,18 @@ export default async function RootLayout({
   }
 
   return (
-    <Provider i18n={provider(lang)} lang={lang}>
-      {children}
-    </Provider>
+    <html lang={htmlLang[lang] ?? lang} suppressHydrationWarning>
+      <head>
+        <meta charSet="utf-8" />
+      </head>
+      <body>
+        <Provider i18n={provider(lang)} lang={lang}>
+          {children}
+        </Provider>
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
+      </body>
+    </html>
   );
 }

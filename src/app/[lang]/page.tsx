@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { permanentRedirect } from 'next/navigation';
 import { getLocalePath, i18n } from '@/lib/i18n';
 import { notFound } from 'next/navigation';
 
@@ -15,7 +15,7 @@ export default async function LangIndexPage({
   }
 
   // This is a docs-only site: send the language root straight to the docs.
-  redirect(getLocalePath(lang, 'docs'));
+  permanentRedirect(getLocalePath(lang, 'docs'));
 }
 
 export function generateStaticParams() {

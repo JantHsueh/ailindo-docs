@@ -12,6 +12,6 @@ export const config = {
   // 末尾用 `.+` 而不是 `.*`：不匹配根路径 `/`，交给 next.config.mjs 的 beforeFiles rewrite
   // 直接渲染中文文档（不跳转、直接 200）。中间件跑在 rewrites 之前，这里不放行就轮不到 rewrite。
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|assets/|robots\\.txt|sitemap\\.xml|llms?\\.txt|llm-full\\.txt|llms-full\\.txt|[^/]+\\.html).+)',
+    '/((?!api|og/|_next/static|_next/image|favicon.ico|assets/|robots\\.txt|sitemap\\.xml|llms?\\.txt|llm-full\\.txt|llms-full\\.txt|[^/]+\\.html).+)',
   ],
 };

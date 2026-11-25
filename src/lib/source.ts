@@ -15,7 +15,8 @@ export const source = loader({
 });
 
 export function getPageImage(page: InferPageType<typeof source>) {
-  const segments = [...page.slugs, 'image.png'];
+  // Locale goes first so the OG route can render the right language version.
+  const segments = [page.locale ?? i18n.defaultLanguage, ...page.slugs, 'image.png'];
 
   return {
     segments,

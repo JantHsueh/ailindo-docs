@@ -8,12 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
-        disallow: [
-          '/api/', // API routes (internal endpoints)
-          '/og/', // Open Graph image generation
-          '/*.mdx$', // raw-markdown mirror of each page — avoid duplicate content
-        ],
+        allow: '/'
       },
     ],
     sitemap: `${origin}/sitemap.xml`,

@@ -1,11 +1,12 @@
 import type { MetadataRoute } from 'next';
 import { source } from '@/lib/source';
 import { i18n } from '@/lib/i18n';
-import { baseUrl } from '@/lib/metadata';
+import { baseUrl, htmlLang } from '@/lib/metadata';
 import { getLocalePath } from '@/lib/i18n';
 
 /**
  * Generate sitemap with:
+ * - Only URLs that return 200 (no `/{lang}` roots, which redirect to `/{lang}/docs`)
  * - Multi-language alternates (hreflang) for SEO
  * - Actual lastModified dates from page data
  * - Proper priority hierarchy
@@ -33,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ): Record<string, string> {
     const alternates: Record<string, string> = {};
     for (const lang of langs) {
-      alternates[lang] = `${url}${getLocalePath(lang, path)}`;
+      alternates[htmlLang[lang] ?? lang] = `${url}${getLocalePath(lang, path)}`;
     }
     const defaultLang = langs.includes(i18n.defaultLanguage)
       ? i18n.defaultLanguage
@@ -42,21 +43,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates['x-default'] = `${url}${getLocalePath(defaultLang, path)}`;
     }
     return alternates;
-  }
-
-  // Track lastModified per language for homepages (more meaningful than "now")
-  const latestModifiedByLang = new Map<string, Date>();
-
-  // Add homepage for each language with alternates
-  for (const lang of i18n.languages) {
-    entries.push({
-      url: `${url}${getLocalePath(lang)}`,
-      changeFrequency: 'daily',
-      priority: 1.0,
-      alternates: {
-        languages: generateAlternates(i18n.languages, ''),
-      },
-    });
   }
 
   // Create a map to group pages by slug across languages
@@ -74,24 +60,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         pagesBySlug.set(slugKey, []);
       }
       pagesBySlug.get(slugKey)!.push({ lang, page });
-
-      const lm = toDate(page.data.lastModified);
-      if (lm) {
-        const prev = latestModifiedByLang.get(lang);
-        if (!prev || lm.getTime() > prev.getTime()) {
-          latestModifiedByLang.set(lang, lm);
-        }
-      }
     }
-  }
-
-  // Backfill homepage lastModified with latest docs update per language (if any)
-  for (const entry of entries) {
-    // entry.url is always like `${url}/${lang}` here
-    const match = entry.url.replace(url, '').split('/').filter(Boolean)[0];
-    if (!match) continue;
-    const lm = latestModifiedByLang.get(match);
-    if (lm) entry.lastModified = lm;
   }
 
   // Add docs pages with proper alternates and lastModified
@@ -106,7 +75,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       // Determine priority based on page depth
       const depth = page.slugs.length;
       let priority: number;
-      if (depth === 1) {
+      if (depth === 0) {
+        priority = 1.0; // Docs home (also served at `/`)
+      } else if (depth === 1) {
         priority = 0.9; // Top-level pages (e.g., /docs/guide)
       } else if (depth === 2) {
         priority = 0.8; // Second-level pages

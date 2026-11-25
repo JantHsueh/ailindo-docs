@@ -47,3 +47,68 @@ function resolveSiteUrl(): string {
 }
 
 export const baseUrl = new URL(resolveSiteUrl());
+
+// BCP 47 language tags for <html lang>, og:locale and hreflang.
+export const htmlLang: Record<string, string> = {
+  zh: 'zh-CN',
+  en: 'en',
+  ja: 'ja',
+};
+
+// Site-level title / description / keywords per language.
+// The docs home (also served at `/`) uses `default` as its <title>.
+export const siteMeta: Record<
+  string,
+  { default: string; template: string; description: string; keywords: string[] }
+> = {
+  zh: {
+    default: 'AI 灵动 - 聚合 AI API 中转站｜GPT、Claude、Gemini 接口文档',
+    template: '%s | AI 灵动',
+    description:
+      'AI 灵动是国内领先的聚合 AI API 中转站，一个 Key 调用 GPT、Claude、Gemini、DeepSeek 等主流大模型，兼容 OpenAI 接口格式。这里提供接入教程、客户端配置指南与完整的 API 参考。',
+    keywords: [
+      'AI 灵动',
+      'AI API 中转',
+      'API 中转站',
+      '大模型 API',
+      'OpenAI API 兼容',
+      'GPT API',
+      'Claude API',
+      'Gemini API',
+      'DeepSeek API',
+      'Claude Code 配置',
+      'AI 接口文档',
+    ],
+  },
+  en: {
+    default: 'AI 灵动 - Unified AI API Gateway for GPT, Claude and Gemini',
+    template: '%s | AI 灵动',
+    description:
+      'AI 灵动 is an aggregated AI API relay: one key for GPT, Claude, Gemini, DeepSeek and more, fully compatible with the OpenAI API format. Tutorials, client setup guides and the complete API reference.',
+    keywords: [
+      'AI API gateway',
+      'AI API relay',
+      'OpenAI compatible API',
+      'GPT API',
+      'Claude API',
+      'Gemini API',
+      'DeepSeek API',
+      'LLM API',
+    ],
+  },
+  ja: {
+    default: 'AI 灵动 - GPT・Claude・Gemini 統合 AI API 中継サービス',
+    template: '%s | AI 灵动',
+    description:
+      'AI 灵动は統合型 AI API 中継プラットフォームです。1 つのキーで GPT、Claude、Gemini、DeepSeek などを呼び出せ、OpenAI API 形式と互換です。導入チュートリアルと API リファレンスを提供します。',
+    keywords: [
+      'AI API 中継',
+      'OpenAI 互換 API',
+      'GPT API',
+      'Claude API',
+      'Gemini API',
+      'DeepSeek API',
+      'LLM API',
+    ],
+  },
+};
